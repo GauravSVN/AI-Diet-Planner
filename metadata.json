@@ -1,0 +1,6 @@
+{
+  "name": "AI Diet & Nutrition Planner",
+  "description": "Your personalized AI-powered diet plan, calories recommendation, water intake tracker, BMI analysis, and nutrition guidance.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

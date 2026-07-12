@@ -1,0 +1,208 @@
+{
+  "users": [
+    {
+      "id": "admin-1",
+      "name": "Dr. Sarah Miller",
+      "email": "admin@aidiet.com",
+      "phone": "+15551234567",
+      "gender": "female",
+      "dob": "1980-05-15",
+      "password": "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+      "role": "admin",
+      "createdAt": "2026-07-12T06:57:32.601Z"
+    },
+    {
+      "id": "nutritionist-1",
+      "name": "Dr. David Vance",
+      "email": "nutritionist@aidiet.com",
+      "phone": "+15557654321",
+      "gender": "male",
+      "dob": "1985-11-20",
+      "password": "5fc060f741630f52596eedba31d68447393077271519496347631783e1c1d482",
+      "role": "nutritionist",
+      "createdAt": "2026-07-12T06:57:32.605Z"
+    },
+    {
+      "id": "user-1",
+      "name": "Alex Johnson",
+      "email": "user@aidiet.com",
+      "phone": "+15559998888",
+      "gender": "male",
+      "dob": "1995-03-25",
+      "password": "e606e38b0d8c19b24cf0ee3808183162ea7cd63ff7912dbb22b5e803286b4446",
+      "role": "user",
+      "createdAt": "2026-07-12T06:57:32.605Z"
+    },
+    {
+      "id": "user-1783839599944",
+      "name": "gaurav",
+      "email": "faithandfocus1717@gmail.com",
+      "phone": "",
+      "gender": "",
+      "dob": "",
+      "password": "a946c09b1a3aa8af1ce5aa74a312e56a198558fbbf3ea182aaf394bc9aec060e",
+      "role": "user",
+      "createdAt": "2026-07-12T06:59:59.944Z"
+    }
+  ],
+  "assessments": [],
+  "dietPlans": [],
+  "reports": [],
+  "progress": [
+    {
+      "id": "prog-1",
+      "userId": "user-1",
+      "weight": 82,
+      "bmi": 26.8,
+      "caloriesConsumed": 2100,
+      "waterIntakeMl": 2500,
+      "exerciseMinutes": 30,
+      "sleepHours": 7,
+      "date": "2026-07-08"
+    },
+    {
+      "id": "prog-2",
+      "userId": "user-1",
+      "weight": 81.8,
+      "bmi": 26.7,
+      "caloriesConsumed": 1950,
+      "waterIntakeMl": 2800,
+      "exerciseMinutes": 45,
+      "sleepHours": 8,
+      "date": "2026-07-09"
+    },
+    {
+      "id": "prog-3",
+      "userId": "user-1",
+      "weight": 81.5,
+      "bmi": 26.6,
+      "caloriesConsumed": 2050,
+      "waterIntakeMl": 3000,
+      "exerciseMinutes": 40,
+      "sleepHours": 7.5,
+      "date": "2026-07-10"
+    }
+  ],
+  "recipes": [
+    {
+      "id": "rec-1",
+      "name": "Quinoa Avocado Salad",
+      "dietType": "vegetarian",
+      "calories": 380,
+      "protein": 12,
+      "cookingTime": 15,
+      "budget": "medium",
+      "ingredients": [
+        "1 cup cooked quinoa",
+        "1/2 ripe avocado, diced",
+        "1/2 cup cherry tomatoes, halved",
+        "1/2 cup cucumber, diced",
+        "1 tbsp olive oil",
+        "1 tbsp lemon juice",
+        "Salt & black pepper to taste"
+      ],
+      "instructions": [
+        "In a large bowl, combine the cooked quinoa, diced avocado, cherry tomatoes, and cucumber.",
+        "Drizzle with olive oil and fresh lemon juice.",
+        "Toss gently and season with salt and black pepper.",
+        "Serve chilled or at room temperature."
+      ]
+    },
+    {
+      "id": "rec-2",
+      "name": "High-Protein Tofu Stir Fry",
+      "dietType": "vegan",
+      "calories": 320,
+      "protein": 18,
+      "cookingTime": 20,
+      "budget": "low",
+      "ingredients": [
+        "200g firm tofu, pressed and cubed",
+        "1 cup broccoli florets",
+        "1/2 red bell pepper, sliced",
+        "1 tbsp soy sauce (low sodium)",
+        "1 tsp sesame oil",
+        "1 clove garlic, minced",
+        "1 tsp sesame seeds"
+      ],
+      "instructions": [
+        "Heat sesame oil in a non-stick pan over medium heat.",
+        "Add tofu cubes and stir fry until lightly golden on all sides.",
+        "Add minced garlic, broccoli, and red bell peppers, sauteing for 5 minutes.",
+        "Drizzle with soy sauce and stir to coat.",
+        "Top with sesame seeds and serve warm."
+      ]
+    },
+    {
+      "id": "rec-3",
+      "name": "Baked Salmon with Asparagus",
+      "dietType": "non_vegetarian",
+      "calories": 450,
+      "protein": 34,
+      "cookingTime": 25,
+      "budget": "high",
+      "ingredients": [
+        "150g fresh salmon fillet",
+        "1 bunch asparagus spears, trimmed",
+        "1 tbsp olive oil",
+        "1/2 lemon, sliced",
+        "1 clove garlic, minced",
+        "Fresh dill, chopped"
+      ],
+      "instructions": [
+        "Preheat oven to 400°F (200°C).",
+        "Place salmon and asparagus on a baking sheet.",
+        "Rub salmon and asparagus with olive oil and minced garlic.",
+        "Top salmon with lemon slices and dill.",
+        "Bake for 15-20 minutes until salmon flakes easily with a fork."
+      ]
+    },
+    {
+      "id": "rec-4",
+      "name": "Keto Spinach Egg Scramble",
+      "dietType": "keto",
+      "calories": 290,
+      "protein": 19,
+      "cookingTime": 10,
+      "budget": "low",
+      "ingredients": [
+        "3 large eggs",
+        "1 cup fresh baby spinach",
+        "1 tbsp butter",
+        "2 tbsp shredded cheddar cheese",
+        "Pinch of salt and red pepper flakes"
+      ],
+      "instructions": [
+        "Whisk eggs in a bowl with a pinch of salt.",
+        "Melt butter in a skillet over medium heat.",
+        "Add spinach and cook until wilted.",
+        "Pour in whisked eggs and scramble gently until fully cooked.",
+        "Sprinkle with cheddar cheese and red pepper flakes before serving."
+      ]
+    }
+  ],
+  "notifications": [
+    {
+      "id": "not-1",
+      "userId": "user-1",
+      "type": "system",
+      "title": "Welcome to AI Diet Planner!",
+      "message": "Please complete your Health Assessment Form to receive your personalized diet and health analysis.",
+      "time": "Just now",
+      "isRead": false,
+      "createdAt": "2026-07-12T06:57:32.605Z"
+    }
+  ],
+  "feedback": [
+    {
+      "id": "feed-1",
+      "userId": "user-1",
+      "name": "Alex Johnson",
+      "email": "user@aidiet.com",
+      "message": "The AI generated diet plan was incredibly accurate and perfectly matched my food allergies!",
+      "rating": 5,
+      "createdAt": "2026-07-12T06:57:32.605Z"
+    }
+  ],
+  "otps": {}
+}
