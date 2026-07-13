@@ -19,25 +19,6 @@ export default function SettingsView({
   onUpdateProfile,
 }: SettingsViewProps) {
   const [reminders, setReminders] = React.useState(true);
-  const [name, setName] = React.useState(currentUser?.name || "");
-  const [email, setEmail] = React.useState(currentUser?.email || "");
-  const [profileSaving, setProfileSaving] = React.useState(false);
-  const [profileSaved, setProfileSaved] = React.useState(false);
-
-  const handleProfileSave = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setProfileSaving(true);
-    try {
-      await onUpdateProfile(name, email);
-      setProfileSaved(true);
-      setTimeout(() => setProfileSaved(false), 2500);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to update profile.");
-    } finally {
-      setProfileSaving(false);
-    }
-  };
   const [saved, setSaved] = React.useState(false);
 
   const handleSave = () => {
@@ -76,63 +57,12 @@ export default function SettingsView({
         <p className="text-xs text-slate-500 dark:text-emerald-200/70 mt-0.5">{t.sub}</p>
       </div>
 
-      {/* Profile Card */}
-      <div className="bg-white dark:bg-slate-950/80 dark:backdrop-blur-2xl p-6 rounded-3xl border border-slate-100 dark:border-green-900/40 shadow-sm space-y-6 hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-green-900/30 dark:hover:border-green-600/50 transition-all duration-300">
-        <div className="flex justify-between items-center">
-          <h3 className="text-base font-bold text-slate-800 dark:text-white uppercase tracking-wider flex items-center space-x-2">
-            <User className="h-5 w-5 text-green-600" />
-            <span>Profile Details</span>
-          </h3>
-          {profileSaved && (
-            <div className="px-3 py-1.5 bg-green-50 border border-green-200 text-green-700 rounded-xl text-xs flex items-center space-x-1.5 animate-in fade-in zoom-in">
-              <CheckCircle className="h-4 w-4" />
-              <span>Profile updated!</span>
-            </div>
-          )}
-        </div>
-        
-        <form onSubmit={handleProfileSave} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-              Full Name
-            </label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className="w-full px-4 py-3 bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-slate-800/50 hover:border-green-500/50 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/80 rounded-xl text-sm focus:outline-none transition-all"
-            />
-          </div>
-          <div>
-            <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-              Email Address
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className="w-full px-4 py-3 bg-slate-50 dark:bg-black/40 border border-slate-200 dark:border-slate-800/50 hover:border-green-500/50 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/80 rounded-xl text-sm focus:outline-none transition-all"
-            />
-          </div>
-          <div className="sm:col-span-2 flex justify-end mt-2">
-            <button
-              type="submit"
-              disabled={profileSaving}
-              className="px-6 py-2.5 bg-green-600 hover:bg-green-700 disabled:opacity-70 text-white font-bold rounded-xl shadow-md transition-all cursor-pointer text-xs flex items-center space-x-2"
-            >
-              {profileSaving ? <Loader2 className="h-4 w-4 animate-spin" /> : <CheckCircle className="h-4 w-4" />}
-              <span>{profileSaving ? "Saving..." : "Update Profile"}</span>
-            </button>
-          </div>
-        </form>
-      </div>
+
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left Card: Config Options */}
-        <div className="bg-white dark:bg-slate-950/80 dark:backdrop-blur-2xl p-6 rounded-3xl border border-slate-100 dark:border-green-900/40 shadow-sm space-y-6 hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-green-900/30 dark:hover:border-green-600/50 transition-all duration-300">
-          <h3 className="text-base font-bold text-slate-800 dark:text-white uppercase tracking-wider block">Preferences Form</h3>
+        <div className="bg-white dark:bg-slate-950/80 dark:backdrop-blur-2xl p-6 sm:p-8 rounded-3xl border border-slate-100 dark:border-green-900/40 shadow-sm space-y-8 hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-green-900/30 dark:hover:border-green-600/50 transition-all duration-300">
+          <h3 className="text-base font-bold text-slate-800 dark:text-white uppercase tracking-wider block border-b border-slate-100 dark:border-slate-800/50 pb-4">System Configuration</h3>
 
           {saved && (
             <div className="p-3 bg-green-50 border border-green-200 text-green-700 rounded-xl text-xs flex items-center space-x-1.5 animate-bounce">
@@ -227,14 +157,15 @@ export default function SettingsView({
 
           <button
             onClick={handleSave}
-            className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-md transition-all cursor-pointer text-xs"
+            className="w-full py-3.5 bg-green-600 hover:bg-green-700 text-white font-bold rounded-xl shadow-md shadow-green-600/20 transition-all cursor-pointer text-xs flex items-center justify-center space-x-2"
           >
-            {t.save}
+            <CheckCircle className="h-4 w-4" />
+            <span>{t.save}</span>
           </button>
         </div>
 
         {/* Right Info: Live Dictionary Preview card */}
-        <div className="bg-gradient-to-r from-slate-900 via-slate-800 to-green-950 p-6 sm:p-8 rounded-3xl border border-slate-800 text-white flex flex-col justify-between space-y-6 overflow-hidden relative hover:-translate-y-1 hover:shadow-xl hover:shadow-green-900/30 hover:border-green-600/50 transition-all duration-300">
+        <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-green-950 p-6 sm:p-8 rounded-3xl border border-slate-800 text-white flex flex-col justify-between space-y-6 overflow-hidden relative hover:-translate-y-1 hover:shadow-xl hover:shadow-green-900/40 hover:border-green-500/50 transition-all duration-300">
           <div className="absolute top-0 right-0 w-64 h-64 bg-green-500/10 rounded-full blur-3xl"></div>
           
           <div className="space-y-4">
@@ -249,14 +180,20 @@ export default function SettingsView({
             </p>
           </div>
 
-          <div className="pt-4 border-t border-slate-800 space-y-3">
-            <div className="flex justify-between text-xs text-slate-400">
+          <div className="pt-4 border-t border-slate-700/50 space-y-3">
+            <div className="flex justify-between items-center text-xs text-slate-400">
               <span>Active Language Code:</span>
-              <span className="font-bold text-white uppercase">{language}</span>
+              <span className="font-bold text-white uppercase px-2 py-1 bg-slate-800 rounded-lg">{language}</span>
             </div>
-            <div className="flex justify-between text-xs text-slate-400">
-              <span>Dynamic Chime Notifications:</span>
-              <span className="font-bold text-white">{reminders ? "ENABLED" : "DISABLED"}</span>
+            <div className="flex justify-between items-center text-xs text-slate-400">
+              <span>Dynamic Push Notifications:</span>
+              <span className={`font-bold uppercase px-2 py-1 rounded-lg ${reminders ? "text-green-400 bg-green-900/30" : "text-rose-400 bg-rose-900/30"}`}>
+                {reminders ? "Enabled" : "Disabled"}
+              </span>
+            </div>
+            <div className="flex justify-between items-center text-xs text-slate-400 pt-3 border-t border-slate-700/50">
+              <span>System Version:</span>
+              <span className="font-bold text-white">v2.4.0 (Pro)</span>
             </div>
           </div>
         </div>

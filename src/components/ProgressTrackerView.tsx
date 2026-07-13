@@ -1,5 +1,5 @@
 import React from "react";
-import { TrendingUp, Award, Calendar, Activity, Zap } from "lucide-react";
+import { TrendingUp, Award, Calendar, Activity, Zap, Brain, Download, List, FileSpreadsheet, Sparkles } from "lucide-react";
 import { 
   LineChart, 
   Line, 
@@ -17,6 +17,23 @@ import { ProgressLog } from "../types";
 interface ProgressTrackerViewProps {
   logs: ProgressLog[];
 }
+
+const CustomTooltip = ({ active, payload, label }: any) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xl">
+        <p className="text-slate-500 dark:text-slate-300 text-[10px] font-bold uppercase tracking-wider mb-2 border-b border-slate-100 dark:border-slate-700 pb-1">{label}</p>
+        {payload.map((entry: any, index: number) => (
+          <p key={`item-${index}`} className="text-sm font-black flex items-center justify-between space-x-4" style={{ color: entry.color || entry.fill }}>
+            <span>{entry.name}:</span>
+            <span>{entry.value} {entry.name.includes("Weight") ? "kg" : entry.name.includes("BMI") ? "" : "kcal"}</span>
+          </p>
+        ))}
+      </div>
+    );
+  }
+  return null;
+};
 
 export default function ProgressTrackerView({ logs }: ProgressTrackerViewProps) {
   const [timeframe, setTimeframe] = React.useState<"weekly" | "monthly">("weekly");
@@ -58,7 +75,7 @@ export default function ProgressTrackerView({ logs }: ProgressTrackerViewProps) 
               timeframe === "weekly" ? "bg-green-600 text-white shadow-md shadow-green-100/10" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-green-400 hover:bg-white dark:hover:bg-slate-800"
             }`}
           >
-            Weekly Report
+            Weekly
           </button>
           <button
             onClick={() => setTimeframe("monthly")}
@@ -66,9 +83,17 @@ export default function ProgressTrackerView({ logs }: ProgressTrackerViewProps) 
               timeframe === "monthly" ? "bg-green-600 text-white shadow-md shadow-green-100/10" : "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-green-400 hover:bg-white dark:hover:bg-slate-800"
             }`}
           >
-            Monthly Report
+            Monthly
           </button>
         </div>
+        
+        <button
+          onClick={() => alert("Downloading CSV Report...")}
+          className="px-4 py-2.5 text-xs font-semibold text-white bg-slate-800 dark:bg-slate-800 hover:bg-slate-700 rounded-xl shadow-md transition-all cursor-pointer flex items-center space-x-1.5 shrink-0 self-start sm:self-center"
+        >
+          <FileSpreadsheet className="h-4 w-4 text-emerald-400" />
+          <span>Export CSV</span>
+        </button>
       </div>
 
       {/* Progress Cards */}
@@ -107,6 +132,24 @@ export default function ProgressTrackerView({ logs }: ProgressTrackerViewProps) 
             <span className="text-[10px] text-slate-400 font-medium">For selected period</span>
           </div>
         </div>
+        <div className="bg-gradient-to-br from-indigo-50 to-purple-50/40 dark:from-indigo-950/40 dark:to-purple-950/20 backdrop-blur-2xl p-5 rounded-2xl border border-indigo-100/60 dark:border-indigo-900/40 shadow-sm hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-indigo-900/30 transition-all duration-300 flex items-start space-x-4 sm:col-span-3">
+          <div className="p-3 bg-indigo-100 dark:bg-indigo-900/60 text-indigo-600 dark:text-indigo-400 rounded-xl shrink-0">
+            <Brain className="h-6 w-6" />
+          </div>
+          <div>
+            <span className="text-xs font-bold text-indigo-800/70 dark:text-indigo-300/80 uppercase tracking-wider flex items-center space-x-1">
+              <Sparkles className="h-3 w-3" />
+              <span>AI Trend Insights</span>
+            </span>
+            <p className="text-sm font-semibold text-slate-700 dark:text-slate-200 mt-1 leading-snug">
+              {weightChange < 0 
+                ? `Excellent progress! You've lost ${Math.abs(weightChange)}kg so far. Consistent caloric deficit is working.` 
+                : weightChange > 0 
+                ? `You've gained ${weightChange}kg. Keep monitoring your average ${avgCal} kcal intake.`
+                : "Weight is stable. Keep logging daily to let the AI analyze deeper metabolic trends."}
+            </p>
+          </div>
+        </div>
       </div>
 
       {/* Charts Grid */}
@@ -129,7 +172,7 @@ export default function ProgressTrackerView({ logs }: ProgressTrackerViewProps) 
                   <XAxis dataKey="date" stroke="#94A3B8" fontSize={11} tickLine={false} />
                   <YAxis yAxisId="left" stroke="#16A34A" fontSize={11} tickLine={false} label={{ value: 'Weight (kg)', angle: -90, position: 'insideLeft', style: {fontSize: 10, fill: '#16A34A'} }} />
                   <YAxis yAxisId="right" orientation="right" stroke="#84CC16" fontSize={11} tickLine={false} label={{ value: 'BMI', angle: 90, position: 'insideRight', style: {fontSize: 10, fill: '#84CC16'} }} />
-                  <Tooltip />
+                  <Tooltip content={<CustomTooltip />} />
                   <Legend iconSize={10} wrapperStyle={{ fontSize: 11 }} />
                   <Line yAxisId="left" type="monotone" dataKey="weight" stroke="#16A34A" strokeWidth={3} activeDot={{ r: 8 }} />
                   <Line yAxisId="right" type="monotone" dataKey="bmi" stroke="#84CC16" strokeWidth={2} />
@@ -157,7 +200,7 @@ export default function ProgressTrackerView({ logs }: ProgressTrackerViewProps) 
                   <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" />
                   <XAxis dataKey="date" stroke="#94A3B8" fontSize={10} tickLine={false} />
                   <YAxis stroke="#94A3B8" fontSize={10} tickLine={false} />
-                  <Tooltip />
+                  <Tooltip content={<CustomTooltip />} />
                   <Bar dataKey="caloriesConsumed" fill="#F97316" radius={[4, 4, 0, 0]} name="Calories (kcal)" />
                 </BarChart>
               </ResponsiveContainer>
@@ -167,6 +210,52 @@ export default function ProgressTrackerView({ logs }: ProgressTrackerViewProps) 
               </div>
             )}
           </div>
+        </div>
+      </div>
+
+      {/* Detailed History Table */}
+      <div className="bg-white/60 dark:bg-slate-950/80 backdrop-blur-2xl p-6 rounded-3xl border border-white/60 dark:border-green-900/40 shadow-sm transition-all duration-300 space-y-4">
+        <div className="flex items-center space-x-2 border-b border-slate-100 dark:border-slate-800/50 pb-4">
+          <List className="h-5 w-5 text-green-600" />
+          <h3 className="text-lg font-bold text-slate-800 dark:text-white tracking-tight">Raw Log History</h3>
+        </div>
+        
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse">
+            <thead>
+              <tr className="border-b border-slate-100 dark:border-slate-800/50 text-slate-400 dark:text-slate-500 text-[10px] uppercase tracking-wider">
+                <th className="py-3 px-4 font-bold">Date</th>
+                <th className="py-3 px-4 font-bold">Weight</th>
+                <th className="py-3 px-4 font-bold">Calories</th>
+                <th className="py-3 px-4 font-bold">Water Intake</th>
+                <th className="py-3 px-4 font-bold text-right">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              {[...sortedLogs].reverse().map((log, idx) => {
+                const statusColor = log.caloriesConsumed > 2500 ? "text-orange-600 bg-orange-50 border-orange-200 dark:bg-orange-900/20 dark:border-orange-800/30" : "text-emerald-600 bg-emerald-50 border-emerald-200 dark:bg-emerald-900/20 dark:border-emerald-800/30";
+                const statusText = log.caloriesConsumed > 2500 ? "Warning" : "On Track";
+                return (
+                  <tr key={idx} className="border-b border-slate-50 dark:border-slate-800/30 hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors group">
+                    <td className="py-3 px-4 text-xs font-bold text-slate-600 dark:text-slate-300">{log.date}</td>
+                    <td className="py-3 px-4 text-sm font-black text-slate-800 dark:text-white">{log.weight} <span className="text-[10px] text-slate-400">kg</span></td>
+                    <td className="py-3 px-4 text-sm font-black text-orange-500">{log.caloriesConsumed} <span className="text-[10px] text-slate-400">kcal</span></td>
+                    <td className="py-3 px-4 text-sm font-black text-blue-500">{log.waterIntakeMl} <span className="text-[10px] text-slate-400">ml</span></td>
+                    <td className="py-3 px-4 text-right">
+                      <span className={`px-2.5 py-1 text-[10px] font-bold uppercase rounded-lg border ${statusColor}`}>
+                        {statusText}
+                      </span>
+                    </td>
+                  </tr>
+                );
+              })}
+              {sortedLogs.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="py-8 text-center text-sm text-slate-400 italic">No history data available.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

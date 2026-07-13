@@ -9,7 +9,14 @@ import {
   ChevronRight, 
   RotateCcw, 
   UtensilsCrossed,
-  Info
+  Info,
+  Activity,
+  Droplet,
+  Award,
+  Clock,
+  Target,
+  CheckCircle2,
+  Calendar
 } from "lucide-react";
 import { 
   PieChart, 
@@ -33,6 +40,7 @@ interface DietPlanViewProps {
 export default function DietPlanView({ plan, onNavigateTab }: DietPlanViewProps) {
   const [activeMealKey, setActiveMealKey] = React.useState<string>("breakfast");
   const [emailSent, setEmailSent] = React.useState(false);
+  const [waterIntake, setWaterIntake] = React.useState(0);
 
   if (!plan) {
     return (
@@ -115,21 +123,64 @@ export default function DietPlanView({ plan, onNavigateTab }: DietPlanViewProps)
           </h2>
           <p className="text-xs text-slate-500 mt-0.5">Calibrated on Mifflin-St Jeor formulas for calorie targets.</p>
         </div>
-        <div className="flex items-center space-x-2 shrink-0">
-          <button
-            onClick={handleEmailPlan}
-            className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-green-500 hover:text-slate-800 dark:hover:text-green-400 hover:bg-slate-50 dark:hover:bg-green-950/30 rounded-xl transition-all cursor-pointer flex items-center space-x-1.5"
-          >
-            <Mail className="h-3.5 w-3.5" />
-            <span>Email Plan</span>
-          </button>
-          <button
-            onClick={handlePrint}
-            className="px-4 py-2 text-xs font-semibold text-white bg-green-600 hover:bg-green-700 rounded-xl shadow-md transition-all cursor-pointer flex items-center space-x-1.5"
-          >
-            <Printer className="h-3.5 w-3.5" />
-            <span>Print / Download</span>
-          </button>
+        <div className="flex items-center space-x-4">
+          <div className="hidden md:flex items-center space-x-2 bg-gradient-to-r from-emerald-500/10 to-teal-500/10 px-4 py-2 rounded-xl border border-emerald-500/20">
+            <Award className="h-5 w-5 text-emerald-500" />
+            <div className="flex flex-col">
+              <span className="text-[10px] uppercase font-bold text-emerald-600/80 tracking-wider">AI Diet Match</span>
+              <span className="text-sm font-black text-emerald-600">98% Optimal</span>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2 shrink-0">
+            <button
+              onClick={handleEmailPlan}
+              className="px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-green-500 hover:text-slate-800 dark:hover:text-green-400 hover:bg-slate-50 dark:hover:bg-green-950/30 rounded-xl transition-all cursor-pointer flex items-center space-x-1.5"
+            >
+              <Mail className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Email Plan</span>
+            </button>
+            <button
+              onClick={handlePrint}
+              className="px-4 py-2 text-xs font-semibold text-white bg-green-600 hover:bg-green-700 rounded-xl shadow-md transition-all cursor-pointer flex items-center space-x-1.5"
+            >
+              <Printer className="h-3.5 w-3.5" />
+              <span>Print / Download</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Interactive Water Tracker */}
+      <div className="bg-white/60 dark:bg-slate-950/80 backdrop-blur-2xl p-6 rounded-3xl border border-white/60 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:-translate-y-1 transition-all duration-300">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
+          <div>
+            <h3 className="text-base font-bold text-slate-800 dark:text-white uppercase tracking-wider flex items-center space-x-2">
+              <Droplet className="h-5 w-5 text-blue-500" />
+              <span>Daily Hydration Tracker</span>
+            </h3>
+            <p className="text-xs text-slate-500 mt-1">Aim for at least 8 glasses (2.0L) daily to support metabolism.</p>
+          </div>
+          <div className="px-4 py-2 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400 rounded-xl font-bold text-sm border border-blue-100 dark:border-blue-800/30 shadow-inner flex items-center space-x-2">
+            <span className="text-xl font-black">{waterIntake * 250}</span>
+            <span className="text-xs font-bold opacity-70">ml / 2000 ml</span>
+          </div>
+        </div>
+        <div className="flex items-center justify-between sm:justify-start sm:space-x-4">
+          {[...Array(8)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => setWaterIntake(i + 1)}
+              className={`relative h-14 w-10 sm:h-16 sm:w-12 rounded-t-lg rounded-b-md border-2 transition-all duration-500 overflow-hidden cursor-pointer flex-shrink-0 ${waterIntake > i ? 'border-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.3)]' : 'border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700'}`}
+            >
+              <div 
+                className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-blue-600 to-blue-400 transition-all duration-700 ease-out`}
+                style={{ height: waterIntake > i ? '100%' : '0%' }}
+              ></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <Droplet className={`h-4 w-4 sm:h-5 sm:w-5 transition-colors duration-500 ${waterIntake > i ? 'text-white drop-shadow-md' : 'text-slate-300 dark:text-slate-700'}`} />
+              </div>
+            </button>
+          ))}
         </div>
       </div>
 
@@ -163,16 +214,30 @@ export default function DietPlanView({ plan, onNavigateTab }: DietPlanViewProps)
               </ResponsiveContainer>
             </div>
 
-          <div className="space-y-3.5 border-t border-slate-50 pt-4">
-            {macroData.map((item, idx) => (
-              <div key={idx} className="flex justify-between items-center">
-                <div className="flex items-center space-x-2 text-sm text-slate-600 dark:text-emerald-100/90">
-                  <div className="h-3 w-3 rounded-full" style={{ backgroundColor: item.color }}></div>
-                  <span>{item.name}</span>
+          <div className="space-y-4 border-t border-slate-100 dark:border-slate-800/50 pt-6">
+            {macroData.map((item, idx) => {
+              const totalKcal = plan.calories;
+              const percentage = Math.round((item.value / totalKcal) * 100);
+              return (
+                <div key={idx} className="space-y-1.5">
+                  <div className="flex justify-between items-end">
+                    <div className="flex items-center space-x-2 text-sm font-bold text-slate-700 dark:text-emerald-50">
+                      <div className="h-2.5 w-2.5 rounded-sm" style={{ backgroundColor: item.color }}></div>
+                      <span>{item.name}</span>
+                    </div>
+                    <span className="font-black text-sm text-slate-800 dark:text-white">
+                      {item.grams}g <span className="text-xs font-semibold text-slate-400 dark:text-slate-500">({percentage}%)</span>
+                    </span>
+                  </div>
+                  <div className="w-full bg-slate-100 dark:bg-slate-800/50 h-2 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full rounded-full transition-all duration-1000 ease-out" 
+                      style={{ width: `${percentage}%`, backgroundColor: item.color }}
+                    ></div>
+                  </div>
                 </div>
-                <span className="font-bold text-sm text-slate-800 dark:text-white">{item.grams} grams <span className="text-xs text-slate-400 font-medium">({item.value} kcal)</span></span>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
 
@@ -233,13 +298,34 @@ export default function DietPlanView({ plan, onNavigateTab }: DietPlanViewProps)
 
         {/* Detailed Meal By Meal Breakdown */}
         <div className="md:col-span-8 bg-white/60 dark:bg-slate-950/80 backdrop-blur-2xl p-6 sm:p-8 rounded-3xl border border-white/60 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white/90 dark:hover:bg-slate-900/80 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-green-900/30 dark:hover:border-green-600/50 hover:-translate-y-2 transition-all duration-300 space-y-6">
-          <div className="border-b border-slate-50 pb-4">
-            <span className="inline-flex items-center space-x-1.5 px-3 py-1 bg-green-500/10 text-green-700 rounded-full text-xs font-semibold">
-              <Coffee className="h-3.5 w-3.5" />
-              <span className="capitalize">{activeMealKey.replace(/([A-Z])/g, " $1")}</span>
+          <div className="border-b border-slate-50 dark:border-slate-800/50 pb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <span className="inline-flex items-center w-fit space-x-1.5 px-3 py-1 bg-green-500/10 text-green-700 dark:text-green-400 rounded-full text-xs font-semibold">
+                <Coffee className="h-3.5 w-3.5" />
+                <span className="capitalize">{activeMealKey.replace(/([A-Z])/g, " $1")}</span>
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {activeMeal?.protein > 15 && (
+                  <span className="inline-flex items-center px-2.5 py-1 bg-blue-50 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border border-blue-100 dark:border-blue-800/50 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-sm">
+                    High Protein
+                  </span>
+                )}
+                {activeMeal?.calories < 300 && (
+                  <span className="inline-flex items-center px-2.5 py-1 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-100 dark:border-emerald-800/50 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-sm">
+                    Light Meal
+                  </span>
+                )}
+                <span className="inline-flex items-center space-x-1 px-2.5 py-1 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700 rounded-lg text-[10px] font-black uppercase tracking-wider shadow-sm">
+                  <Clock className="h-3 w-3" />
+                  <span>~15 Min Prep</span>
+                </span>
+              </div>
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-white tracking-tight mt-4 mb-1">{activeMeal?.foodName}</h3>
+            <span className="text-sm font-semibold text-slate-500 dark:text-slate-400 flex items-center space-x-1.5">
+              <Target className="h-4 w-4" />
+              <span>Serving Size: {activeMeal?.quantity}</span>
             </span>
-            <h3 className="text-2xl font-black text-slate-800 dark:text-white tracking-tight mt-3">{activeMeal?.foodName}</h3>
-            <span className="text-sm font-medium text-slate-400">Serving Quantity: {activeMeal?.quantity}</span>
           </div>
 
           {/* Quick Nutritional Specs */}

@@ -12,7 +12,13 @@ export default function WaterIntakeView({
   initialConsumedMl,
   onLogWater,
 }: WaterIntakeViewProps) {
-  const goalMl = initialGoalLitres * 1000;
+  // Activity Level State
+  const [activityLevel, setActivityLevel] = React.useState<"sedentary" | "active" | "athlete">("sedentary");
+  
+  const baseGoalMl = initialGoalLitres * 1000;
+  const activityBonus = activityLevel === "sedentary" ? 0 : activityLevel === "active" ? 500 : 1000;
+  const goalMl = baseGoalMl + activityBonus;
+
   const pct = Math.min(Math.round((initialConsumedMl / goalMl) * 100), 100);
 
   // SVG Progress Circle Calculations
@@ -37,6 +43,26 @@ export default function WaterIntakeView({
     setTimeout(() => {
       setNotificationStatus(null);
     }, 4000);
+  };
+
+  const getHydrationStatus = () => {
+    if (pct < 30) return { label: "Dehydrated", color: "text-orange-500", bg: "bg-orange-50 dark:bg-orange-950/30", border: "border-orange-200 dark:border-orange-900/50", msg: "Drink water to avoid fatigue." };
+    if (pct < 80) return { label: "On Track", color: "text-blue-500 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-200 dark:border-blue-900/50", msg: "Keep sipping water throughout the day." };
+    return { label: "Optimal", color: "text-emerald-500 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-950/30", border: "border-emerald-200 dark:border-emerald-900/50", msg: "Excellent! You are perfectly hydrated." };
+  };
+  const status = getHydrationStatus();
+
+  // Timeline State
+  const [logs, setLogs] = React.useState<{ time: string, ml: number }[]>([
+    { time: "10:15 AM", ml: 500 },
+    { time: "08:30 AM", ml: 250 }
+  ]);
+  
+  const handleLogWater = (ml: number) => {
+    onLogWater(ml);
+    const now = new Date();
+    const timeString = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    setLogs([{ time: timeString, ml }, ...logs].slice(0, 5)); // Keep last 5
   };
 
   return (
@@ -65,6 +91,13 @@ export default function WaterIntakeView({
           {/* Background Ambient Glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
           
+          {/* Activity Selector */}
+          <div className="flex bg-slate-50 dark:bg-black/40 rounded-xl p-1 mb-2 relative z-10 w-full max-w-[250px] border border-slate-100 dark:border-cyan-900/30">
+            <button onClick={() => setActivityLevel("sedentary")} className={`flex-1 text-[10px] font-bold py-1.5 rounded-lg transition-all ${activityLevel === "sedentary" ? "bg-white dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300 shadow-sm" : "text-slate-400 dark:text-slate-500 hover:text-slate-600"}`}>Sedentary</button>
+            <button onClick={() => setActivityLevel("active")} className={`flex-1 text-[10px] font-bold py-1.5 rounded-lg transition-all ${activityLevel === "active" ? "bg-white dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300 shadow-sm" : "text-slate-400 dark:text-slate-500 hover:text-slate-600"}`}>Active</button>
+            <button onClick={() => setActivityLevel("athlete")} className={`flex-1 text-[10px] font-bold py-1.5 rounded-lg transition-all ${activityLevel === "athlete" ? "bg-white dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300 shadow-sm" : "text-slate-400 dark:text-slate-500 hover:text-slate-600"}`}>Athlete</button>
+          </div>
+
           <h3 className="text-base font-bold text-slate-800 dark:text-cyan-300 uppercase tracking-wider block relative z-10">Today's Intake Goal</h3>
 
           <div className="relative h-44 w-44 flex items-center justify-center z-10">
@@ -109,6 +142,15 @@ export default function WaterIntakeView({
               </span>
             )}
           </div>
+
+          {/* Hydration Status */}
+          <div className={`w-full p-4 rounded-2xl border flex flex-col items-center text-center relative z-10 transition-colors ${status.bg} ${status.border}`}>
+            <span className={`text-[10px] font-bold uppercase tracking-wider flex items-center space-x-1 ${status.color}`}>
+              <ShieldAlert className="h-3 w-3" />
+              <span>{status.label} Status</span>
+            </span>
+            <p className="text-xs font-medium text-slate-600 dark:text-slate-300 mt-1.5">{status.msg}</p>
+          </div>
         </div>
 
         {/* Right Log Buttons & Reminders */}
@@ -119,7 +161,7 @@ export default function WaterIntakeView({
               {quickButtons.map((btn, idx) => (
                 <button
                   key={idx}
-                  onClick={() => onLogWater(btn.ml)}
+                  onClick={() => handleLogWater(btn.ml)}
                   className="p-4 border border-slate-100 dark:border-slate-800/50 dark:bg-black/40 hover:border-cyan-500 hover:bg-cyan-50/50 dark:hover:border-cyan-500 dark:hover:bg-cyan-950/50 dark:hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] hover:-translate-y-1 text-left rounded-2xl transition-all duration-300 cursor-pointer flex justify-between items-center group relative overflow-hidden"
                 >
                   <div className="relative z-10">
@@ -136,8 +178,24 @@ export default function WaterIntakeView({
             </div>
           </div>
 
+          {/* Timeline */}
+          <div className="pt-6 border-t border-slate-50 dark:border-slate-800/50 space-y-4">
+            <h3 className="text-sm font-bold text-slate-800 dark:text-cyan-300 uppercase tracking-wider flex items-center space-x-2">
+              <Clock className="h-4 w-4 text-cyan-500" />
+              <span>Recent Intake Logs</span>
+            </h3>
+            <div className="space-y-3">
+              {logs.map((log, idx) => (
+                <div key={idx} className="flex justify-between items-center bg-slate-50 dark:bg-black/40 p-3.5 rounded-xl border border-slate-100 dark:border-cyan-900/30 hover:border-cyan-500/30 transition-colors">
+                  <span className="text-xs font-bold text-slate-500 dark:text-cyan-100/60">{log.time}</span>
+                  <span className="text-sm font-black text-cyan-600 dark:text-cyan-400">+{log.ml} ml</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
           {/* Reminders Toggle config */}
-          <div className="pt-6 border-t border-slate-50 space-y-4">
+          <div className="pt-6 border-t border-slate-50 dark:border-slate-800/50 space-y-4">
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-2">
                 <Clock className="h-5 w-5 text-blue-500" />

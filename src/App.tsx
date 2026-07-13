@@ -22,7 +22,11 @@ import {
   AlertCircle,
   Eye,
   EyeOff,
-  Menu
+  Menu,
+  Scale,
+  Flame,
+  ShieldAlert,
+  Target
 } from "lucide-react";
 
 import Navbar from "./components/Navbar";
@@ -39,6 +43,7 @@ import RecipesView from "./components/RecipesView";
 import FeedbackView from "./components/FeedbackView";
 import SettingsView from "./components/SettingsView";
 import AdminPanelView from "./components/AdminPanelView";
+import UserProfileView from "./components/UserProfileView";
 
 import { 
   User, 
@@ -51,6 +56,7 @@ import {
   ProgressLog, 
   Recipe 
 } from "./types";
+import { useLanguage } from "./LanguageContext";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
@@ -92,7 +98,7 @@ export default function App() {
   const [isGeneratingPlan, setIsGeneratingPlan] = React.useState(false);
 
   // Settings options
-  const [language, setLanguage] = React.useState<"en" | "hi">("en");
+  const { language, setLanguage } = useLanguage();
   const [theme, setTheme] = React.useState<"light" | "dark">("dark");
 
   // Load token on startup
@@ -352,7 +358,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen font-sans ${theme === "dark" ? "bg-slate-950 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-slate-950 to-slate-950 text-slate-100" : "bg-gradient-to-br from-indigo-100 via-purple-50 to-teal-100 text-slate-900"}`}>
+    <div className={`min-h-screen font-sans ${theme === "dark" ? "dark bg-slate-950 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-slate-950 to-slate-950 text-slate-100" : "bg-gradient-to-br from-indigo-100 via-purple-50 to-teal-100 text-slate-900"}`}>
       {/* 1. LANDING PAGE VIEW */}
       {activeSection !== "dashboard" ? (
         <div className="pt-16">
@@ -427,34 +433,10 @@ export default function App() {
                 )}
 
                 {currentTab === "profile" && (
-                  <div className="max-w-3xl mx-auto bg-white dark:bg-slate-950/80 dark:backdrop-blur-2xl p-6 sm:p-8 rounded-3xl border border-slate-100 dark:border-green-900/40 shadow-xl hover:-translate-y-1 hover:shadow-2xl dark:hover:shadow-green-900/30 dark:hover:border-green-600/50 transition-all duration-300 space-y-6">
-                    <h2 className="text-xl font-bold text-slate-800 dark:text-white border-b border-slate-50 dark:border-green-900/30 pb-3 flex items-center space-x-2">
-                      <UserIcon className="h-5 w-5 text-green-600" />
-                      <span>User Profile Details</span>
-                    </h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
-                      <div>
-                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Full Name</span>
-                        <span className="font-semibold text-slate-700 dark:text-slate-200 mt-1 block">{currentUser?.name}</span>
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Registered Email</span>
-                        <span className="font-semibold text-slate-700 dark:text-slate-200 mt-1 block">{currentUser?.email}</span>
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Active System Role</span>
-                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-50 dark:bg-green-900/30 border border-green-100 dark:border-green-800 text-green-700 dark:text-green-400 uppercase tracking-wider mt-1.5">
-                          {currentUser?.role}
-                        </span>
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Member Since</span>
-                        <span className="font-semibold text-slate-700 dark:text-slate-200 mt-1 block">
-                          {currentUser?.createdAt ? new Date(currentUser.createdAt).toLocaleDateString() : "--"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <UserProfileView 
+                    currentUser={currentUser} 
+                    onUpdateProfile={handleUpdateProfile} 
+                  />
                 )}
 
                 {currentTab === "assessment" && (
@@ -493,61 +475,121 @@ export default function App() {
                 )}
 
                 {currentTab === "nutrition-report" && (
-                  <div className="max-w-4xl mx-auto bg-white/60 dark:bg-slate-950/80 backdrop-blur-2xl p-6 sm:p-8 rounded-3xl border border-white/60 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] space-y-6 hover:-translate-y-1 hover:shadow-2xl dark:hover:shadow-green-900/30 dark:hover:border-green-600/50 transition-all duration-300">
-                    <h2 className="text-xl font-bold text-slate-800 dark:text-white border-b border-slate-50 dark:border-slate-800 pb-3 flex items-center space-x-2">
-                      <FileText className="h-5 w-5 text-green-600" />
-                      <span>Clinical Nutritionist Analysis Report</span>
-                    </h2>
+                  <div className="max-w-4xl mx-auto bg-white/60 dark:bg-slate-950/80 backdrop-blur-2xl p-6 sm:p-10 rounded-[2rem] border border-white/60 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] space-y-8 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] transition-all duration-300">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800/50 pb-5">
+                      <div>
+                        <h2 className="text-2xl font-black text-slate-800 dark:text-white flex items-center space-x-3">
+                          <div className="p-2 bg-green-100 dark:bg-green-900/50 rounded-xl">
+                            <FileText className="h-6 w-6 text-green-600 dark:text-green-400" />
+                          </div>
+                          <span>Clinical Nutrition Report</span>
+                        </h2>
+                        <p className="text-sm text-slate-500 mt-1">AI-generated metabolic analysis based on your assessment.</p>
+                      </div>
+                      {nutritionReport && (
+                        <div className="px-4 py-2 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-xl font-bold text-sm border border-green-200 dark:border-green-800/50 shadow-sm flex items-center space-x-2">
+                          <UserCheck className="h-4 w-4" />
+                          <span>Status: Profile Analyzed</span>
+                        </div>
+                      )}
+                    </div>
+
                     {nutritionReport ? (
-                      <div className="space-y-6 text-sm text-slate-600">
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                          <div className="bg-gradient-to-br from-blue-50 to-blue-100/50 dark:bg-none dark:bg-black/40 p-4 rounded-2xl border border-blue-100 dark:border-slate-800/50 hover:-translate-y-1 hover:shadow-md dark:hover:shadow-green-900/30 dark:hover:border-green-500/50 transition-all duration-300 cursor-default">
-                            <span className="text-[10px] font-bold text-blue-400 dark:text-emerald-100/90 uppercase tracking-wider block mb-1">Current BMI</span>
-                            <span className="text-xl font-black text-blue-700 dark:text-white">{nutritionReport.bmi || "--"}</span>
+                      <div className="space-y-8">
+                        {/* Core Metrics Grid */}
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+                          <div className="bg-gradient-to-br from-blue-50 to-blue-100/40 dark:from-blue-950/30 dark:to-slate-900/50 p-5 rounded-2xl border border-blue-100/50 dark:border-blue-900/30 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 group">
+                            <div className="flex items-center space-x-2 mb-3">
+                              <Scale className="h-4 w-4 text-blue-500 group-hover:scale-110 transition-transform" />
+                              <span className="text-[10px] font-bold text-blue-600/80 dark:text-blue-400 uppercase tracking-wider">Current BMI</span>
+                            </div>
+                            <span className="text-3xl font-black text-blue-700 dark:text-blue-300 block">{nutritionReport.bmi || "--"}</span>
                           </div>
-                          <div className="bg-gradient-to-br from-purple-50 to-purple-100/50 dark:bg-none dark:bg-black/40 p-4 rounded-2xl border border-purple-100 dark:border-slate-800/50 hover:-translate-y-1 hover:shadow-md dark:hover:shadow-green-900/30 dark:hover:border-green-500/50 transition-all duration-300 cursor-default">
-                            <span className="text-[10px] font-bold text-purple-400 dark:text-emerald-100/90 uppercase tracking-wider block mb-1">Category</span>
-                            <span className="text-lg font-black text-purple-700 dark:text-white truncate block">{nutritionReport.weightCategory || "--"}</span>
+                          
+                          <div className="bg-gradient-to-br from-purple-50 to-purple-100/40 dark:from-purple-950/30 dark:to-slate-900/50 p-5 rounded-2xl border border-purple-100/50 dark:border-purple-900/30 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 group">
+                            <div className="flex items-center space-x-2 mb-3">
+                              <Activity className="h-4 w-4 text-purple-500 group-hover:scale-110 transition-transform" />
+                              <span className="text-[10px] font-bold text-purple-600/80 dark:text-purple-400 uppercase tracking-wider">Category</span>
+                            </div>
+                            <span className="text-xl font-black text-purple-700 dark:text-purple-300 block truncate leading-tight">{nutritionReport.weightCategory || "--"}</span>
                           </div>
-                          <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 dark:bg-none dark:bg-black/40 p-4 rounded-2xl border border-orange-100 dark:border-slate-800/50 hover:-translate-y-1 hover:shadow-md dark:hover:shadow-green-900/30 dark:hover:border-green-500/50 transition-all duration-300 cursor-default">
-                            <span className="text-[10px] font-bold text-orange-400 dark:text-emerald-100/90 uppercase tracking-wider block mb-1">Base BMR (kcal)</span>
-                            <span className="text-xl font-black text-orange-700 dark:text-white">{nutritionReport.bmr || "--"}</span>
+                          
+                          <div className="bg-gradient-to-br from-orange-50 to-orange-100/40 dark:from-orange-950/30 dark:to-slate-900/50 p-5 rounded-2xl border border-orange-100/50 dark:border-orange-900/30 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 group">
+                            <div className="flex items-center space-x-2 mb-3">
+                              <Flame className="h-4 w-4 text-orange-500 group-hover:scale-110 transition-transform" />
+                              <span className="text-[10px] font-bold text-orange-600/80 dark:text-orange-400 uppercase tracking-wider">Base BMR</span>
+                            </div>
+                            <span className="text-3xl font-black text-orange-700 dark:text-orange-300 block">{nutritionReport.bmr || "--"} <span className="text-xs font-bold opacity-60">kcal</span></span>
                           </div>
-                          <div className="bg-gradient-to-br from-rose-50 to-rose-100/50 dark:bg-none dark:bg-black/40 p-4 rounded-2xl border border-rose-100 dark:border-slate-800/50 hover:-translate-y-1 hover:shadow-md dark:hover:shadow-green-900/30 dark:hover:border-green-500/50 transition-all duration-300 cursor-default">
-                            <span className="text-[10px] font-bold text-rose-400 dark:text-emerald-100/90 uppercase tracking-wider block mb-1">TDEE (kcal)</span>
-                            <span className="text-xl font-black text-rose-700 dark:text-white">{nutritionReport.tdee || "--"}</span>
+                          
+                          <div className="bg-gradient-to-br from-rose-50 to-rose-100/40 dark:from-rose-950/30 dark:to-slate-900/50 p-5 rounded-2xl border border-rose-100/50 dark:border-rose-900/30 hover:-translate-y-1 hover:shadow-lg hover:shadow-rose-500/10 transition-all duration-300 group">
+                            <div className="flex items-center space-x-2 mb-3">
+                              <Target className="h-4 w-4 text-rose-500 group-hover:scale-110 transition-transform" />
+                              <span className="text-[10px] font-bold text-rose-600/80 dark:text-rose-400 uppercase tracking-wider">Daily TDEE</span>
+                            </div>
+                            <span className="text-3xl font-black text-rose-700 dark:text-rose-300 block">{nutritionReport.tdee || "--"} <span className="text-xs font-bold opacity-60">kcal</span></span>
                           </div>
                         </div>
 
-                        <div className="bg-slate-50 dark:bg-black/40 p-5 rounded-2xl border border-slate-100/60 dark:border-slate-800/50 hover:border-green-500/30 transition-all">
-                          <span className="text-[10px] font-bold text-slate-400 dark:text-emerald-200/90 uppercase tracking-wider">Metabolic Summary & Ideal Range</span>
-                          <p className="text-slate-700 dark:text-white font-medium leading-relaxed mt-2">{nutritionReport.summaryText}</p>
-                          <div className="mt-3 inline-block px-3 py-1 bg-green-100 dark:bg-green-600/20 border dark:border-green-600/30 text-green-700 dark:text-green-400 font-semibold text-xs rounded-lg">
-                            Target Ideal Weight: {nutritionReport.idealWeightRange || "N/A"}
+                        {/* Metabolic Summary */}
+                        <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200/60 dark:border-slate-800/80 hover:border-green-500/40 transition-all">
+                          <h3 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-2 flex items-center space-x-2">
+                            <Activity className="h-4 w-4 text-green-500" />
+                            <span>Metabolic Summary & Ideal Range</span>
+                          </h3>
+                          <p className="text-slate-600 dark:text-slate-300 font-medium leading-relaxed mt-3 bg-white dark:bg-black/20 p-4 rounded-xl border border-slate-100 dark:border-slate-800/50 shadow-inner">{nutritionReport.summaryText}</p>
+                          <div className="mt-4 flex items-center space-x-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 w-fit px-4 py-2 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
+                            <Target className="h-4 w-4" />
+                            <span className="font-bold text-sm">Target Ideal Weight: {nutritionReport.idealWeightRange || "N/A"}</span>
                           </div>
                         </div>
+
+                        {/* Insights Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                          <div className="space-y-2">
-                            <span className="text-xs font-bold text-slate-400 dark:text-white uppercase">Deficiencies Warning</span>
-                            <ul className="list-disc list-inside space-y-1">
+                          <div className="bg-orange-50/50 dark:bg-orange-950/10 p-6 rounded-2xl border border-orange-100 dark:border-orange-900/30 space-y-4 hover:border-orange-300 dark:hover:border-orange-700 transition-colors">
+                            <h3 className="text-sm font-bold text-orange-800 dark:text-orange-400 uppercase tracking-wider flex items-center space-x-2">
+                              <ShieldAlert className="h-4 w-4" />
+                              <span>Deficiencies Warning</span>
+                            </h3>
+                            <div className="flex flex-wrap gap-2">
                               {(nutritionReport.deficiencies || []).map((def: string, idx: number) => (
-                                <li key={idx} className="text-amber-700 dark:text-orange-300 font-semibold">{def}</li>
+                                <span key={idx} className="px-3 py-1.5 bg-orange-100 dark:bg-orange-900/40 text-orange-800 dark:text-orange-300 font-semibold text-xs rounded-lg border border-orange-200 dark:border-orange-800/50">
+                                  {def}
+                                </span>
                               ))}
-                            </ul>
+                              {(!nutritionReport.deficiencies || nutritionReport.deficiencies.length === 0) && (
+                                <span className="text-sm text-slate-500 italic">No major deficiencies detected.</span>
+                              )}
+                            </div>
                           </div>
-                          <div className="space-y-2">
-                            <span className="text-xs font-bold text-slate-400 dark:text-white uppercase">Suggested Superfoods</span>
-                            <ul className="list-disc list-inside space-y-1">
+
+                          <div className="bg-green-50/50 dark:bg-green-950/10 p-6 rounded-2xl border border-green-100 dark:border-green-900/30 space-y-4 hover:border-green-300 dark:hover:border-green-700 transition-colors">
+                            <h3 className="text-sm font-bold text-green-800 dark:text-green-400 uppercase tracking-wider flex items-center space-x-2">
+                              <Sparkles className="h-4 w-4 text-green-500" />
+                              <span>Suggested Superfoods</span>
+                            </h3>
+                            <div className="flex flex-wrap gap-2">
                               {(nutritionReport.superfoods || []).map((food: string, idx: number) => (
-                                <li key={idx} className="text-green-700 dark:text-emerald-300 font-semibold">{food}</li>
+                                <span key={idx} className="px-3 py-1.5 bg-green-100 dark:bg-green-900/40 text-green-800 dark:text-green-300 font-semibold text-xs rounded-lg border border-green-200 dark:border-green-800/50 shadow-sm">
+                                  {food}
+                                </span>
                               ))}
-                            </ul>
+                              {(!nutritionReport.superfoods || nutritionReport.superfoods.length === 0) && (
+                                <span className="text-sm text-slate-500 italic">Complete assessment to get superfood recommendations.</span>
+                              )}
+                            </div>
                           </div>
                         </div>
                       </div>
                     ) : (
-                      <div className="py-8 text-center text-slate-400">
-                        Complete assessment to let AI generate a customized clinical report.
+                      <div className="py-16 flex flex-col items-center justify-center text-center space-y-4 bg-slate-50 dark:bg-slate-900/30 rounded-3xl border border-dashed border-slate-200 dark:border-slate-800">
+                        <div className="p-4 bg-white dark:bg-black/40 rounded-full shadow-sm">
+                          <FileText className="h-10 w-10 text-slate-300 dark:text-slate-600" />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300">Report Unavailable</h3>
+                          <p className="text-slate-500 max-w-sm mt-1 text-sm leading-relaxed">Complete your health assessment to let our AI generate a customized clinical report for you.</p>
+                        </div>
                       </div>
                     )}
                   </div>

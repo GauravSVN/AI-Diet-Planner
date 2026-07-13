@@ -19,6 +19,7 @@ import {
   BookOpenCheck
 } from "lucide-react";
 import { UserRole } from "../types";
+import { useLanguage } from "../LanguageContext";
 
 interface SidebarProps {
   currentTab: string;
@@ -42,6 +43,8 @@ export default function Sidebar({
   isMobileMenuOpen,
   onCloseMobile,
 }: SidebarProps) {
+  const { t } = useLanguage();
+
   const getInitials = (name: string) => {
     return name
       .split(" ")
@@ -52,18 +55,18 @@ export default function Sidebar({
   };
 
   const navItems = [
-    { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { id: "profile", label: "My Profile", icon: User },
+    { id: "dashboard", label: t("nav_home"), icon: LayoutDashboard },
+    { id: "profile", label: t("nav_profile"), icon: User },
     { id: "assessment", label: "Health Assessment", icon: ClipboardList },
-    { id: "diet-plan", label: "Diet Plan", icon: Apple },
+    { id: "diet-plan", label: t("nav_diet"), icon: Apple },
     { id: "nutrition-report", label: "Nutrition Report", icon: FileText },
-    { id: "bmi-calc", label: "BMI Calculator", icon: Activity },
-    { id: "water-intake", label: "Water Intake", icon: GlassWater },
-    { id: "meal-planner", label: "Meal Planner", icon: CalendarDays },
-    { id: "progress", label: "Progress Tracker", icon: TrendingUp },
+    { id: "bmi-calc", label: t("nav_bmi"), icon: Activity },
+    { id: "water-intake", label: t("nav_water"), icon: GlassWater },
+    { id: "meal-planner", label: t("nav_meal"), icon: CalendarDays },
+    { id: "progress", label: t("nav_progress"), icon: TrendingUp },
     { id: "history", label: "History", icon: History },
-    { id: "feedback", label: "Feedback & Reviews", icon: MessageSquareHeart },
-    { id: "settings", label: "Settings", icon: Settings },
+    { id: "feedback", label: t("nav_feedback"), icon: MessageSquareHeart },
+    { id: "settings", label: t("nav_settings"), icon: Settings },
   ];
 
   // Admin / Nutritionist additions

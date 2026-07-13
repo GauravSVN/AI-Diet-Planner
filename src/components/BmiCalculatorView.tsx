@@ -4,6 +4,8 @@ import { Activity, ShieldAlert, Sparkles, Scale, Info } from "lucide-react";
 export default function BmiCalculatorView() {
   const [height, setHeight] = React.useState<number>(170); // in cm
   const [weight, setWeight] = React.useState<number>(70); // in kg
+  const [age, setAge] = React.useState<number>(25); // years
+  const [gender, setGender] = React.useState<"male" | "female">("male");
 
   const heightM = height / 100;
   const bmi = Number((weight / (heightM * heightM)).toFixed(1));
@@ -21,6 +23,19 @@ export default function BmiCalculatorView() {
   };
 
   const category = getBmiCategory(bmi);
+
+  // BFP Formula (Deurenberg)
+  const genderValue = gender === "male" ? 1 : 0;
+  const bfp = Number(((1.20 * bmi) + (0.23 * age) - (10.8 * genderValue) - 5.4).toFixed(1));
+
+  // Health Risk logic
+  const getHealthRisk = (val: number) => {
+    if (val < 18.5) return { level: "Moderate Risk", color: "text-amber-600 bg-amber-50 border-amber-200" };
+    if (val < 25) return { level: "Low Risk", color: "text-emerald-600 bg-emerald-50 border-emerald-200" };
+    if (val < 30) return { level: "Increased Risk", color: "text-orange-600 bg-orange-50 border-orange-200" };
+    return { level: "High Risk", color: "text-red-600 bg-red-50 border-red-200" };
+  };
+  const healthRisk = getHealthRisk(bmi);
 
   // Ideal weight based on Devine formula
   const minIdeal = Number((18.5 * heightM * heightM).toFixed(1));
@@ -54,6 +69,36 @@ export default function BmiCalculatorView() {
         {/* Left Interactive Sliders */}
         <div className="bg-white dark:bg-slate-950/80 dark:backdrop-blur-2xl p-6 rounded-3xl border border-slate-100 dark:border-green-900/40 shadow-sm space-y-6 hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-green-900/30 dark:hover:border-green-600/50 transition-all duration-300">
           <h3 className="text-lg font-bold text-slate-800 dark:text-white tracking-tight">Adjust Parameters</h3>
+          
+          <div className="flex space-x-3 mb-2">
+            <button 
+              onClick={() => setGender("male")}
+              className={`flex-1 py-2.5 rounded-xl text-sm font-bold border transition-all cursor-pointer ${gender === "male" ? "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/20" : "bg-slate-50 dark:bg-black/40 text-slate-500 border-slate-200 dark:border-slate-800 hover:bg-blue-50 dark:hover:bg-blue-900/20"}`}
+            >
+              Male
+            </button>
+            <button 
+              onClick={() => setGender("female")}
+              className={`flex-1 py-2.5 rounded-xl text-sm font-bold border transition-all cursor-pointer ${gender === "female" ? "bg-pink-600 text-white border-pink-600 shadow-md shadow-pink-500/20" : "bg-slate-50 dark:bg-black/40 text-slate-500 border-slate-200 dark:border-slate-800 hover:bg-pink-50 dark:hover:bg-pink-900/20"}`}
+            >
+              Female
+            </button>
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex justify-between items-center text-sm font-semibold text-slate-600 dark:text-emerald-100/90">
+              <span>Age</span>
+              <span className="text-green-600 font-bold">{age} Years</span>
+            </div>
+            <input
+              type="range"
+              min={15}
+              max={100}
+              value={age}
+              onChange={(e) => setAge(Number(e.target.value))}
+              className="w-full accent-green-600 cursor-pointer h-2 bg-slate-100 dark:bg-slate-800 rounded-lg"
+            />
+          </div>
 
           {/* Height slider */}
           <div className="space-y-2">
@@ -101,16 +146,55 @@ export default function BmiCalculatorView() {
 
         {/* Right Dynamic BMI Result Analysis */}
         <div className="bg-white dark:bg-slate-950/80 dark:backdrop-blur-2xl p-6 sm:p-8 rounded-3xl border border-slate-100 dark:border-green-900/40 shadow-sm flex flex-col justify-between space-y-6 hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-green-900/30 dark:hover:border-green-600/50 transition-all duration-300">
-          <div className="space-y-4">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Your Calculated Index</span>
-            <div className="flex items-baseline space-x-2">
-              <span className="text-5xl font-black text-slate-800 dark:text-white tracking-tight">{bmi}</span>
-              <span className="text-sm text-slate-400 font-semibold">kg/m²</span>
+          <div className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-4">
+              <div>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Your Clinical BMI</span>
+                <div className="flex items-baseline space-x-2">
+                  <span className="text-6xl font-black text-slate-800 dark:text-white tracking-tighter">{bmi}</span>
+                  <span className="text-sm text-slate-400 font-semibold">kg/m²</span>
+                </div>
+              </div>
+              <div className="flex flex-col items-start sm:items-end space-y-2">
+                <div className={`px-4 py-1.5 border rounded-xl text-sm font-bold w-fit shadow-sm ${category.color}`}>
+                  {category.label}
+                </div>
+                <div className={`px-3 py-1 border rounded-lg text-xs font-bold w-fit shadow-sm flex items-center space-x-1.5 ${healthRisk.color}`}>
+                  <ShieldAlert className="h-3 w-3" />
+                  <span>{healthRisk.level}</span>
+                </div>
+              </div>
             </div>
 
-            {/* Category badge */}
-            <div className={`px-4 py-2 border rounded-xl text-sm font-bold w-fit ${category.color}`}>
-              {category.label}
+            {/* Visual BMI Gauge */}
+            <div className="pt-2">
+              <div className="flex justify-between text-[9px] font-extrabold text-slate-400 mb-2 px-1 uppercase tracking-widest">
+                <span>Under</span>
+                <span>Normal</span>
+                <span>Over</span>
+                <span>Obese</span>
+              </div>
+              <div className="relative w-full h-4 rounded-full bg-slate-100 dark:bg-slate-800 flex overflow-hidden border border-slate-200 dark:border-slate-700">
+                <div className="w-[18.5%] h-full bg-blue-400"></div>
+                <div className="w-[25%] h-full bg-green-400"></div>
+                <div className="w-[19%] h-full bg-orange-400"></div>
+                <div className="flex-1 h-full bg-red-500"></div>
+                
+                {/* Marker */}
+                <div 
+                  className="absolute top-0 bottom-0 w-1 bg-slate-900 dark:bg-white shadow-[0_0_8px_rgba(0,0,0,0.5)] transition-all duration-500 ease-out z-10"
+                  style={{ left: `${Math.min(99, Math.max(0, ((bmi - 10) / 30) * 100))}%` }}
+                ></div>
+              </div>
+            </div>
+            
+            {/* Estimated BFP */}
+            <div className="flex items-center justify-between bg-slate-50 dark:bg-black/40 p-4 rounded-2xl border border-slate-100 dark:border-slate-800/50">
+              <div className="flex items-center space-x-2">
+                <Activity className="h-4 w-4 text-purple-500" />
+                <span className="text-sm font-bold text-slate-700 dark:text-slate-300">Est. Body Fat (BFP)</span>
+              </div>
+              <span className="text-lg font-black text-purple-600 dark:text-purple-400">{bfp}%</span>
             </div>
           </div>
 
