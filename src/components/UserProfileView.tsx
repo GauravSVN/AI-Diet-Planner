@@ -24,7 +24,7 @@ import { User } from "../types";
 
 interface UserProfileViewProps {
   currentUser: User | null;
-  onUpdateProfile: (name: string, email: string) => Promise<void>;
+  onUpdateProfile: (name: string, email: string, phone?: string, dob?: string) => Promise<void>;
 }
 
 export default function UserProfileView({ currentUser, onUpdateProfile }: UserProfileViewProps) {
@@ -111,7 +111,7 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
 
     setIsSaving(true);
     try {
-      await onUpdateProfile(editName, editEmail);
+      await onUpdateProfile(editName, editEmail, editPhone, editDob);
       setSavedPhone(editPhone);
       setSavedDob(editDob);
       setIsEditing(false);

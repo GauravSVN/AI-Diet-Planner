@@ -246,11 +246,11 @@ export default function App() {
     setActiveSection("home");
   };
 
-  const handleUpdateProfile = async (name: string, email: string) => {
+  const handleUpdateProfile = async (name: string, email: string, phone?: string, dob?: string) => {
     if (!token) return;
     try {
       const config = { headers: { Authorization: `Bearer ${token}` } };
-      const res = await axios.put("/api/user/profile", { name, email }, config);
+      const res = await axios.put("/api/user/profile", { name, email, phone, dob }, config);
       const updatedUser = res.data;
       setCurrentUser(updatedUser);
       localStorage.setItem("auth_user", JSON.stringify(updatedUser));

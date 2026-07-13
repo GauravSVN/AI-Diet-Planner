@@ -227,7 +227,7 @@ app.get("/api/user/profile", authMiddleware, async (req: any, res) => {
 
 app.put("/api/user/profile", authMiddleware, async (req: any, res) => {
   try {
-    const { name, email } = req.body;
+    const { name, email, phone, dob } = req.body;
     if (!name || !email) {
       return res.status(400).json({ error: "Name and email are required." });
     }
@@ -237,6 +237,8 @@ app.put("/api/user/profile", authMiddleware, async (req: any, res) => {
     }
     user.name = name;
     user.email = email;
+    if (phone !== undefined) user.phone = phone;
+    if (dob !== undefined) user.dob = dob;
     await user.save();
     
     const userObj = user.toObject();
