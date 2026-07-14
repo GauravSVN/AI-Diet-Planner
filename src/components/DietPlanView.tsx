@@ -42,8 +42,6 @@ interface DietPlanViewProps {
 export default function DietPlanView({ plan, onNavigateTab }: DietPlanViewProps) {
   const { t } = useLanguage();
   const [activeMealKey, setActiveMealKey] = React.useState<string>("breakfast");
-  const [emailSent, setEmailSent] = React.useState(false);
-  const [isEmailing, setIsEmailing] = React.useState(false);
   const [waterIntake, setWaterIntake] = React.useState(0);
 
   if (!plan) {
@@ -206,71 +204,8 @@ export default function DietPlanView({ plan, onNavigateTab }: DietPlanViewProps)
     await (window as any).html2pdf().set(opt).from(htmlContent).save();
   };
 
-  const handleEmailPlan = async () => {
-    const htmlContent = getPDFHtmlContent();
-    if (!htmlContent) return;
-    
-    setIsEmailing(true);
-
-    try {
-      const opt = {
-        margin:       0,
-        filename:     `diet_plan_${new Date().toISOString().split('T')[0]}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, logging: false },
-        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
-      };
-
-      // Load html2pdf if not loaded
-      if (!(window as any).html2pdf) {
-        await new Promise((resolve, reject) => {
-          const script = document.createElement('script');
-          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
-          script.onload = resolve;
-          script.onerror = reject;
-          document.body.appendChild(script);
-        });
-      }
-
-      // Output base64 URI
-      const pdfBase64 = await (window as any).html2pdf().set(opt).from(htmlContent).output('datauristring');
-      
-      const token = localStorage.getItem("auth_token");
-      
-      const response = await fetch("/api/email-plan", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({ pdfBase64 })
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to send email");
-      }
-
-      setEmailSent(true);
-      setTimeout(() => {
-        setEmailSent(false);
-      }, 4000);
-    } catch (err) {
-      console.error(err);
-      alert("Failed to email the diet plan. Please check your connection or try again later.");
-    } finally {
-      setIsEmailing(false);
-    }
-  };
-
   return (
     <div id="diet-plan-tab" className="space-y-8 animate-in fade-in duration-300">
-      {emailSent && (
-        <div className="p-4 bg-green-50 border border-green-200 text-green-800 rounded-2xl text-xs font-semibold animate-in fade-in slide-in-from-top-2 duration-300 flex items-center space-x-2">
-          <Info className="h-4 w-4 shrink-0 text-green-600" />
-          <span>{t('diet_email_success')}</span>
-        </div>
-      )}
-
       {/* Header section with actions */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 bg-white dark:bg-slate-950/80 backdrop-blur-2xl p-5 rounded-2xl border border-white/40 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white dark:hover:bg-slate-900/80 dark:hover:shadow-green-900/30 dark:hover:border-green-600/50 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:-translate-y-2 transition-all duration-300">
         <div>
@@ -295,14 +230,6 @@ export default function DietPlanView({ plan, onNavigateTab }: DietPlanViewProps)
             >
               <FileSpreadsheet className="h-3.5 w-3.5 text-green-500" />
               <span className="hidden sm:inline">Download PDF</span>
-            </button>
-            <button
-              onClick={handleEmailPlan}
-              disabled={isEmailing}
-              className={`px-4 py-2 text-xs font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-green-500 hover:text-slate-800 dark:hover:text-green-400 hover:bg-slate-50 dark:hover:bg-green-950/30 rounded-xl transition-all flex items-center space-x-1.5 ${isEmailing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
-            >
-              <Mail className={`h-3.5 w-3.5 ${isEmailing ? 'animate-bounce' : ''}`} />
-              <span className="hidden sm:inline">{isEmailing ? 'Sending...' : t('diet_email')}</span>
             </button>
             <button
               onClick={handlePrint}
