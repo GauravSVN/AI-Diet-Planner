@@ -26,10 +26,12 @@ interface SidebarProps {
   onChangeTab: (tab: string) => void;
   userRole: UserRole;
   userName: string;
+  userEmail: string;
   isCollapsed: boolean;
   onToggleCollapse: () => void;
   isMobileMenuOpen: boolean;
   onCloseMobile: () => void;
+  onLogout: () => void;
 }
 
 export default function Sidebar({
@@ -37,6 +39,7 @@ export default function Sidebar({
   onChangeTab,
   userRole,
   userName,
+  userEmail,
   onLogout,
   isCollapsed,
   onToggleCollapse,
@@ -78,7 +81,9 @@ export default function Sidebar({
     { id: "nutri-dashboard", label: "Client Assessments", icon: BookOpenCheck },
   ];
 
-  const visibleItems = [
+  const isSuperAdmin = userEmail === "gauravraj17062000@gmail.com";
+
+  const visibleItems = isSuperAdmin ? adminItems : [
     ...navItems,
     ...(userRole === "admin" ? adminItems : []),
     ...(userRole === "nutritionist" ? nutritionistItems : []),

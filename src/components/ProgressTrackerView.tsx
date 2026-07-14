@@ -88,14 +88,6 @@ export default function ProgressTrackerView({ logs }: ProgressTrackerViewProps) 
             {t("prog_monthly")}
           </button>
         </div>
-        
-        <button
-          onClick={() => alert("Downloading CSV Report...")}
-          className="px-4 py-2.5 text-xs font-semibold text-white bg-slate-800 dark:bg-slate-800 hover:bg-slate-700 rounded-xl shadow-md transition-all cursor-pointer flex items-center space-x-1.5 shrink-0 self-start sm:self-center"
-        >
-          <FileSpreadsheet className="h-4 w-4 text-emerald-400" />
-          <span>{t("prog_export")}</span>
-        </button>
       </div>
 
       {/* Progress Cards */}

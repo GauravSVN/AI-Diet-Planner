@@ -107,9 +107,13 @@ export default function App() {
     const storedUser = localStorage.getItem("auth_user");
     if (storedToken && storedUser) {
       setToken(storedToken);
-      setCurrentUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      setCurrentUser(parsedUser);
       setIsLoggedIn(true);
       setActiveSection("dashboard");
+      if (parsedUser.email === "gauravraj17062000@gmail.com") {
+        setCurrentTab("admin-panel");
+      }
     }
   }, []);
 
@@ -176,7 +180,11 @@ export default function App() {
       setIsLoggedIn(true);
       setAuthMode(null);
       setActiveSection("dashboard");
-      setCurrentTab("dashboard");
+      if (user.email === "gauravraj17062000@gmail.com") {
+        setCurrentTab("admin-panel");
+      } else {
+        setCurrentTab("dashboard");
+      }
       
       // Clear fields
       setEmail("");
@@ -386,17 +394,17 @@ export default function App() {
         /* 2. LOGGED IN DASHBOARD CORE */
         <div className="flex min-h-screen relative">
           <Sidebar 
-            currentTab={currentTab}
-            onChangeTab={setCurrentTab}
+            currentTab={currentTab} 
+            onChangeTab={setCurrentTab} 
             userRole={currentUser?.role || "user"}
             userName={currentUser?.name || "Client"}
-            onLogout={handleLogout}
+            userEmail={currentUser?.email || ""}
             isCollapsed={isSidebarCollapsed}
             onToggleCollapse={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
             isMobileMenuOpen={isMobileMenuOpen}
             onCloseMobile={() => setIsMobileMenuOpen(false)}
+            onLogout={handleLogout}
           />
-
           <main id="dashboard-content" className={`flex-1 min-w-0 transition-all duration-300 ${isSidebarCollapsed ? "md:ml-20" : "md:ml-64"} ml-0 flex flex-col`}>
             
             {/* Mobile Top Bar */}

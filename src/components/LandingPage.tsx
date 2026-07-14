@@ -127,8 +127,8 @@ export default function LandingPage({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Hero Content */}
-            <div className="lg:col-span-7 space-y-8 text-center lg:text-left">
-              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 bg-green-500/10 dark:bg-green-500/20 text-green-700 dark:text-green-400 rounded-full text-xs font-semibold tracking-wide uppercase shadow-sm">
+            <div className="lg:col-span-7 space-y-8 text-center lg:text-left animate-in fade-in slide-in-from-bottom-8 duration-1000">
+              <span className="inline-flex items-center space-x-1.5 px-3.5 py-1.5 bg-green-500/10 dark:bg-green-500/20 text-green-700 dark:text-green-400 rounded-full text-xs font-semibold tracking-wide uppercase shadow-sm animate-in fade-in zoom-in duration-700 delay-200 fill-mode-both">
                 <Sparkles className="h-4 w-4" />
                 <span>Next-Gen AI Clinical Dietetics</span>
               </span>
@@ -137,7 +137,7 @@ export default function LandingPage({
                 Your Personal <span className="text-green-600 dark:text-green-400 drop-shadow-[0_0_15px_rgba(34,197,94,0.4)]">AI Diet & Nutrition</span> Planner
               </h1>
 
-              <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300 fill-mode-both">
                 Get a personalized AI-powered diet plan based on your body, lifestyle, and health goals. Fully integrated with clinical calculations and custom food parameters.
               </p>
 
@@ -150,7 +150,7 @@ export default function LandingPage({
               </div>
 
               {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500 fill-mode-both">
                 <button
                   onClick={onStartAssessment}
                   className="w-full sm:w-auto px-8 py-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-2xl shadow-lg shadow-green-200 dark:shadow-green-900/50 hover:shadow-xl dark:hover:shadow-green-700/50 hover:-translate-y-1 transition-all text-center cursor-pointer"
@@ -167,7 +167,7 @@ export default function LandingPage({
             </div>
 
             {/* Hero Image Mockup */}
-            <div className="lg:col-span-5 flex justify-center relative group">
+            <div className="lg:col-span-5 flex justify-center relative group animate-in fade-in zoom-in-95 slide-in-from-right-8 duration-1000 delay-300 fill-mode-both">
               <div className="relative w-full max-w-md p-4 bg-white/70 dark:bg-slate-950/80 backdrop-blur-md border border-slate-100 dark:border-green-900/30 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-green-900/20 group-hover:-translate-y-2 group-hover:border-green-500/50 transition-all duration-500">
                 <img
                   src="https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&q=80&w=600"
