@@ -12,6 +12,7 @@ import {
   ShieldAlert
 } from "lucide-react";
 import { PersonalInfo, MedicalInfo, FitnessPreferences } from "../types";
+import { useLanguage } from "../LanguageContext";
 
 interface AssessFormProps {
   onSubmitAssessment: (data: {
@@ -32,16 +33,17 @@ export default function AssessForm({
   isSubmitting,
   initialData,
 }: AssessFormProps) {
+  const { t } = useLanguage();
   const [step, setStep] = React.useState(1);
 
   // 1. Personal Info State
   const [personal, setPersonal] = React.useState<PersonalInfo>({
     fullName: initialData?.personalInfo?.fullName || "",
-    age: initialData?.personalInfo?.age || 25,
+    age: initialData?.personalInfo?.age || 0,
     gender: initialData?.personalInfo?.gender || "male",
-    height: initialData?.personalInfo?.height || 170,
-    weight: initialData?.personalInfo?.weight || 70,
-    currentBmi: initialData?.personalInfo?.currentBmi || 24.2,
+    height: initialData?.personalInfo?.height || 0,
+    weight: initialData?.personalInfo?.weight || 0,
+    currentBmi: initialData?.personalInfo?.currentBmi || 0,
     bodyFat: initialData?.personalInfo?.bodyFat || undefined,
     country: initialData?.personalInfo?.country || "",
     state: initialData?.personalInfo?.state || "",
@@ -50,12 +52,12 @@ export default function AssessForm({
     activityLevel: initialData?.personalInfo?.activityLevel || "moderately_active",
     lifestyle: initialData?.personalInfo?.lifestyle || "",
     dailyRoutine: initialData?.personalInfo?.dailyRoutine || "",
-    sleepHours: initialData?.personalInfo?.sleepHours || 8,
-    wakeUpTime: initialData?.personalInfo?.wakeUpTime || "07:00",
-    bedTime: initialData?.personalInfo?.bedTime || "23:00",
-    exerciseTime: initialData?.personalInfo?.exerciseTime || "18:00",
-    walkingStepsPerDay: initialData?.personalInfo?.walkingStepsPerDay || 5000,
-    workingHours: initialData?.personalInfo?.workingHours || 8,
+    sleepHours: initialData?.personalInfo?.sleepHours || 0,
+    wakeUpTime: initialData?.personalInfo?.wakeUpTime || "",
+    bedTime: initialData?.personalInfo?.bedTime || "",
+    exerciseTime: initialData?.personalInfo?.exerciseTime || "",
+    walkingStepsPerDay: initialData?.personalInfo?.walkingStepsPerDay || 0,
+    workingHours: initialData?.personalInfo?.workingHours || 0,
     stressLevel: initialData?.personalInfo?.stressLevel || "medium",
   });
 
@@ -84,12 +86,14 @@ export default function AssessForm({
     favoriteFoods: initialData?.fitnessPreferences?.favoriteFoods || "",
     dislikedFoods: initialData?.fitnessPreferences?.dislikedFoods || "",
     dailyBudget: initialData?.fitnessPreferences?.dailyBudget || "medium",
-    cookingTime: initialData?.fitnessPreferences?.cookingTime || 30,
-    waterIntakeGoal: initialData?.fitnessPreferences?.waterIntakeGoal || 2.5,
-    mealsPerDay: initialData?.fitnessPreferences?.mealsPerDay || 3,
+    cookingTime: initialData?.fitnessPreferences?.cookingTime || 0,
+    waterIntakeGoal: initialData?.fitnessPreferences?.waterIntakeGoal || 0,
+    mealsPerDay: initialData?.fitnessPreferences?.mealsPerDay || 0,
     snacksAllowed: initialData?.fitnessPreferences?.snacksAllowed || true,
     supplements: initialData?.fitnessPreferences?.supplements || "",
   });
+
+  const [timeFocus, setTimeFocus] = React.useState({ wake: false, bed: false, ex: false });
 
   // Real-time BMI calculation
   React.useEffect(() => {
@@ -99,6 +103,12 @@ export default function AssessForm({
       setPersonal((prev) => ({ ...prev, currentBmi: bmi }));
     }
   }, [personal.height, personal.weight]);
+
+  const handleNumberInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (["e", "E", "+", "-"].includes(e.key)) {
+      e.preventDefault();
+    }
+  };
 
   const handlePersonalChange = (key: keyof PersonalInfo, value: any) => {
     setPersonal((prev) => ({ ...prev, [key]: value }));
@@ -134,25 +144,25 @@ export default function AssessForm({
             <Activity className="h-6 w-6 text-white animate-pulse" />
           </div>
           <div>
-            <h2 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">AI Clinical Assessment</h2>
-            <p className="text-xs text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70">Provide parameters for metabolic & diet plan calculations.</p>
+            <h2 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight">{t('assess_title')}</h2>
+            <p className="text-xs text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70">{t('assess_subtitle')}</p>
           </div>
         </div>
 
         <div className="hidden sm:flex items-center space-x-4">
           <div className={`flex items-center space-x-1.5 ${step === 1 ? "text-green-600 font-bold" : "text-slate-400"}`}>
             <User className="h-4 w-4" />
-            <span className="text-xs">1. Personal</span>
+            <span className="text-xs">1. {t('assess_step1')}</span>
           </div>
           <ChevronRight className="h-3 w-3 text-slate-300" />
           <div className={`flex items-center space-x-1.5 ${step === 2 ? "text-green-600 font-bold" : "text-slate-400"}`}>
             <HeartPulse className="h-4 w-4" />
-            <span className="text-xs">2. Medical</span>
+            <span className="text-xs">2. {t('assess_step2')}</span>
           </div>
           <ChevronRight className="h-3 w-3 text-slate-300" />
           <div className={`flex items-center space-x-1.5 ${step === 3 ? "text-green-600 font-bold" : "text-slate-400"}`}>
             <Target className="h-4 w-4" />
-            <span className="text-xs">3. Goal & Diet</span>
+            <span className="text-xs">3. {t('assess_step4')}</span>
           </div>
         </div>
       </div>
@@ -163,43 +173,39 @@ export default function AssessForm({
         {step === 1 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
             <h3 className="text-lg font-bold text-slate-800 dark:text-white border-b border-slate-50 pb-2">
-              Step 1: Physical Parameters & Lifestyle
+              {t('assess_step1')}
             </h3>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                  Full Name
-                </label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_full_name")}</label>
                 <input
                   type="text"
                   required
                   value={personal.fullName}
                   onChange={(e) => handlePersonalChange("fullName", e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50/50 dark:bg-black/40 border border-slate-200 dark:border-slate-800/50 hover:border-green-500/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-slate-800/80 rounded-xl text-sm transition-all focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
-                  placeholder="e.g. John Doe"
+                  placeholder={t("af_name_ph")}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Age
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_age")}</label>
                   <input
                     type="number"
+                    onKeyDown={handleNumberInputKeyDown}
                     required
                     min={1}
                     max={120}
-                    value={personal.age}
+                    value={personal.age === 0 ? "" : personal.age}
                     onChange={(e) => handlePersonalChange("age", Number(e.target.value))}
                     className="w-full px-4 py-3 bg-slate-50/50 dark:bg-black/40 border border-slate-200 dark:border-slate-800/50 hover:border-green-500/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-slate-800/80 rounded-xl text-sm transition-all focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
+                    placeholder="25"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Gender
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_gender")}</label>
                   <select
                     value={personal.gender}
                     onChange={(e) => handlePersonalChange("gender", e.target.value)}
@@ -214,54 +220,51 @@ export default function AssessForm({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Height (cm)
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_height")}</label>
                   <input
                     type="number"
+                    onKeyDown={handleNumberInputKeyDown}
                     required
                     min={50}
                     max={250}
-                    value={personal.height}
+                    value={personal.height === 0 ? "" : personal.height}
                     onChange={(e) => handlePersonalChange("height", Number(e.target.value))}
                     className="w-full px-4 py-3 bg-slate-50/50 dark:bg-black/40 border border-slate-200 dark:border-slate-800/50 hover:border-green-500/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-slate-800/80 rounded-xl text-sm transition-all focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
+                    placeholder="170"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Weight (kg)
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_weight")}</label>
                   <input
                     type="number"
+                    onKeyDown={handleNumberInputKeyDown}
                     required
                     min={20}
                     max={300}
-                    value={personal.weight}
+                    value={personal.weight === 0 ? "" : personal.weight}
                     onChange={(e) => handlePersonalChange("weight", Number(e.target.value))}
                     className="w-full px-4 py-3 bg-slate-50/50 dark:bg-black/40 border border-slate-200 dark:border-slate-800/50 hover:border-green-500/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-slate-800/80 rounded-xl text-sm transition-all focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
+                    placeholder="70"
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Body Fat % (Optional)
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_body_fat")}</label>
                   <input
                     type="number"
+                    onKeyDown={handleNumberInputKeyDown}
                     min={2}
                     max={70}
                     value={personal.bodyFat || ""}
                     onChange={(e) => handlePersonalChange("bodyFat", e.target.value ? Number(e.target.value) : undefined)}
                     className="w-full px-4 py-3 bg-slate-50/50 dark:bg-black/40 border border-slate-200 dark:border-slate-800/50 hover:border-green-500/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-slate-800/80 rounded-xl text-sm transition-all focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
-                    placeholder="e.g. 18"
+                    placeholder={t("af_body_fat")}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Calculated BMI
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_calc_bmi")}</label>
                   <div className="w-full px-4 py-3 bg-slate-100 dark:bg-green-950/40 border border-slate-200 dark:border-green-800/50 rounded-xl text-sm text-slate-700 dark:text-white font-bold">
                     {personal.currentBmi} ({personal.currentBmi < 18.5 ? "Underweight" : personal.currentBmi < 25 ? "Normal" : personal.currentBmi < 30 ? "Overweight" : "Obese"})
                   </div>
@@ -270,115 +273,103 @@ export default function AssessForm({
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Country
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_country")}</label>
                   <input
                     type="text"
                     required
                     value={personal.country}
                     onChange={(e) => handlePersonalChange("country", e.target.value)}
                     className="w-full px-3 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/90 rounded-xl text-sm focus:outline-none"
-                    placeholder="e.g. India"
+                    placeholder={t("af_country_ph")}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    State
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_state")}</label>
                   <input
                     type="text"
                     required
                     value={personal.state}
                     onChange={(e) => handlePersonalChange("state", e.target.value)}
                     className="w-full px-3 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/90 rounded-xl text-sm focus:outline-none"
-                    placeholder="Delhi"
+                    placeholder={t("af_state_ph")}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    City
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_city")}</label>
                   <input
                     type="text"
                     required
                     value={personal.city}
                     onChange={(e) => handlePersonalChange("city", e.target.value)}
                     className="w-full px-3 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/90 rounded-xl text-sm focus:outline-none"
-                    placeholder="New Delhi"
+                    placeholder={t("af_city_ph")}
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                  Occupation
-                </label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_occupation")}</label>
                 <input
                   type="text"
                   required
                   value={personal.occupation}
                   onChange={(e) => handlePersonalChange("occupation", e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50/50 dark:bg-black/40 border border-slate-200 dark:border-slate-800/50 hover:border-green-500/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-slate-800/80 rounded-xl text-sm transition-all focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
-                  placeholder="e.g. Software Engineer"
+                  placeholder={t("af_occ_ph")}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                  Physical Activity Level
-                </label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_activity")}</label>
                 <select
                   value={personal.activityLevel}
                   onChange={(e) => handlePersonalChange("activityLevel", e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50/50 dark:bg-black/40 border border-slate-200 dark:border-slate-800/50 hover:border-green-500/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-slate-800/80 rounded-xl text-sm transition-all focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
                 >
-                  <option value="sedentary">Sedentary (Little/no exercise)</option>
-                  <option value="lightly_active">Lightly Active (Light sport 1-3 days/week)</option>
-                  <option value="moderately_active">Moderately Active (Moderate sport 3-5 days/week)</option>
-                  <option value="very_active">Very Active (Hard sport 6-7 days/week)</option>
-                  <option value="extra_active">Extra Active (Very hard sport & physical job)</option>
+                  <option value="sedentary">{t("af_sedentary")}</option>
+                  <option value="lightly_active">{t("af_light")}</option>
+                  <option value="moderately_active">{t("af_moderate")}</option>
+                  <option value="very_active">{t("af_very")}</option>
+                  <option value="extra_active">{t("af_extra")}</option>
                 </select>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Sleep Hours
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_sleep")}</label>
                   <input
                     type="number"
+                    onKeyDown={handleNumberInputKeyDown}
                     required
                     min={4}
                     max={16}
-                    value={personal.sleepHours}
+                    value={personal.sleepHours === 0 ? "" : personal.sleepHours}
                     onChange={(e) => handlePersonalChange("sleepHours", Number(e.target.value))}
                     className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/90 rounded-xl text-sm focus:outline-none"
+                    placeholder="8"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Stress Level
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_stress")}</label>
                   <select
                     value={personal.stressLevel}
                     onChange={(e) => handlePersonalChange("stressLevel", e.target.value)}
                     className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/90 rounded-xl text-sm focus:outline-none"
                   >
-                    <option value="low">Low (Relaxed)</option>
-                    <option value="medium">Medium (Moderate daily pressure)</option>
-                    <option value="high">High (High pressure/Anxiety)</option>
+                    <option value="low">{t("af_stress_low")}</option>
+                    <option value="medium">{t("af_stress_med")}</option>
+                    <option value="high">{t("af_stress_high")}</option>
                   </select>
                 </div>
               </div>
 
               <div className="grid grid-cols-3 gap-3">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Wake Up Time
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_wake")}</label>
                   <input
-                    type="text"
+                    type={timeFocus.wake || personal.wakeUpTime ? "time" : "text"}
+                    onFocus={() => setTimeFocus((prev) => ({ ...prev, wake: true }))}
+                    onBlur={() => setTimeFocus((prev) => ({ ...prev, wake: false }))}
                     required
                     value={personal.wakeUpTime}
                     onChange={(e) => handlePersonalChange("wakeUpTime", e.target.value)}
@@ -387,11 +378,11 @@ export default function AssessForm({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Bed Time
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_bed")}</label>
                   <input
-                    type="text"
+                    type={timeFocus.bed || personal.bedTime ? "time" : "text"}
+                    onFocus={() => setTimeFocus((prev) => ({ ...prev, bed: true }))}
+                    onBlur={() => setTimeFocus((prev) => ({ ...prev, bed: false }))}
                     required
                     value={personal.bedTime}
                     onChange={(e) => handlePersonalChange("bedTime", e.target.value)}
@@ -400,11 +391,11 @@ export default function AssessForm({
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Exercise Time
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_ex_time")}</label>
                   <input
-                    type="text"
+                    type={timeFocus.ex || personal.exerciseTime ? "time" : "text"}
+                    onFocus={() => setTimeFocus((prev) => ({ ...prev, ex: true }))}
+                    onBlur={() => setTimeFocus((prev) => ({ ...prev, ex: false }))}
                     required
                     value={personal.exerciseTime}
                     onChange={(e) => handlePersonalChange("exerciseTime", e.target.value)}
@@ -416,45 +407,43 @@ export default function AssessForm({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Walking Steps / Day
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_steps")}</label>
                   <input
                     type="number"
+                    onKeyDown={handleNumberInputKeyDown}
                     required
                     min={0}
-                    value={personal.walkingStepsPerDay}
+                    value={personal.walkingStepsPerDay === 0 ? "" : personal.walkingStepsPerDay}
                     onChange={(e) => handlePersonalChange("walkingStepsPerDay", Number(e.target.value))}
                     className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/90 rounded-xl text-sm focus:outline-none"
+                    placeholder="5000"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Working Hours / Day
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_work_hours")}</label>
                   <input
                     type="number"
+                    onKeyDown={handleNumberInputKeyDown}
                     required
                     min={0}
                     max={24}
-                    value={personal.workingHours}
+                    value={personal.workingHours === 0 ? "" : personal.workingHours}
                     onChange={(e) => handlePersonalChange("workingHours", Number(e.target.value))}
                     className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/90 rounded-xl text-sm focus:outline-none"
+                    placeholder="8"
                   />
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                Describe Your Daily Routine
-              </label>
+              <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_routine")}</label>
               <textarea
                 rows={3}
                 value={personal.dailyRoutine}
                 onChange={(e) => handlePersonalChange("dailyRoutine", e.target.value)}
                 className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/90 rounded-xl text-sm focus:outline-none"
-                placeholder="Briefly explain your morning, afternoon, and evening routine..."
+                placeholder={t("af_routine_ph")}
               ></textarea>
             </div>
           </div>
@@ -463,15 +452,11 @@ export default function AssessForm({
         {/* STEP 2: MEDICAL INFORMATION */}
         {step === 2 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
-            <h3 className="text-lg font-bold text-slate-800 dark:text-white border-b border-slate-50 pb-2">
-              Step 2: Medical Parameters & Conditions
-            </h3>
+            <h3 className="text-lg font-bold text-slate-800 dark:text-white border-b border-slate-50 pb-2">{t("assess_step2")}</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                  Blood Group
-                </label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_blood_grp")}</label>
                 <select
                   value={medical.bloodGroup}
                   onChange={(e) => handleMedicalChange("bloodGroup", e.target.value)}
@@ -489,34 +474,30 @@ export default function AssessForm({
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                  Blood Pressure
-                </label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_bp")}</label>
                 <select
                   value={medical.bloodPressure}
                   onChange={(e) => handleMedicalChange("bloodPressure", e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/90 rounded-xl text-sm focus:outline-none"
                 >
-                  <option value="normal">Normal BP</option>
-                  <option value="low">Low BP (Hypotension)</option>
-                  <option value="high">High BP (Hypertension)</option>
+                  <option value="normal">{t("af_bp_norm")}</option>
+                  <option value="low">{t("af_bp_low")}</option>
+                  <option value="high">{t("af_bp_high")}</option>
                 </select>
               </div>
             </div>
 
             {/* Checkbox grid for medical conditions */}
             <div>
-              <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-3">
-                Pre-existing Chronic Diseases (Check all that apply)
-              </label>
+              <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-3">{t("af_chronic")}</label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
                 {[
-                  { key: "diabetes", label: "Diabetes (Type 1 or 2)" },
-                  { key: "thyroid", label: "Thyroid Disorder" },
-                  { key: "heartDisease", label: "Heart Condition" },
-                  { key: "kidneyDisease", label: "Kidney Disease" },
-                  { key: "liverDisease", label: "Liver Disease" },
-                  { key: "cholesterol", label: "High Cholesterol" },
+                  { key: "diabetes", label: t("af_diab") },
+                  { key: "thyroid", label: t("af_thyroid") },
+                  { key: "heartDisease", label: t("af_heart") },
+                  { key: "kidneyDisease", label: t("af_kidney") },
+                  { key: "liverDisease", label: t("af_liver") },
+                  { key: "cholesterol", label: t("af_chol") },
                 ].map((item) => (
                   <label
                     key={item.key}
@@ -540,49 +521,43 @@ export default function AssessForm({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                  Food Allergies & Intolerances
-                </label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_allergies")}</label>
                 <input
                   type="text"
                   value={medical.foodAllergies}
                   onChange={(e) => handleMedicalChange("foodAllergies", e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/90 rounded-xl text-sm focus:outline-none"
-                  placeholder="e.g. Peanuts, Lactose, Gluten (or None)"
+                  placeholder={t("af_al_ph")}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                  Current Medications
-                </label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_meds")}</label>
                 <input
                   type="text"
                   value={medical.medication}
                   onChange={(e) => handleMedicalChange("medication", e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/90 rounded-xl text-sm focus:outline-none"
-                  placeholder="e.g. Metformin 500mg, Levothyroxine"
+                  placeholder={t("af_meds_ph")}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                  Digestive Problems
-                </label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_digest")}</label>
                 <input
                   type="text"
                   value={medical.digestiveProblems}
                   onChange={(e) => handleMedicalChange("digestiveProblems", e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/90 rounded-xl text-sm focus:outline-none"
-                  placeholder="e.g. IBS, Bloating, Acid Reflux (or None)"
+                  placeholder={t("af_dig_ph")}
                 />
               </div>
 
               <div className="grid grid-cols-3 gap-3 pt-6">
                 {[
-                  { key: "pregnant", label: "Pregnant / Lactating" },
-                  { key: "smoking", label: "Smokes Tobacco" },
-                  { key: "alcohol", label: "Consumes Alcohol" },
+                  { key: "pregnant", label: t("af_preg") },
+                  { key: "smoking", label: t("af_smoke") },
+                  { key: "alcohol", label: t("af_alcohol") },
                 ].map((item) => (
                   <label
                     key={item.key}
@@ -611,156 +586,142 @@ export default function AssessForm({
         {step === 3 && (
           <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-300">
             <h3 className="text-lg font-bold text-slate-800 dark:text-white border-b border-slate-50 dark:border-green-900/30 pb-2">
-              Step 3: Goals, Diet Types & Parameters
+              {t('assess_step4')}
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                  Primary Fitness Goal
-                </label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_goal")}</label>
                 <select
                   value={prefs.goal}
                   onChange={(e) => handlePrefsChange("goal", e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50/50 dark:bg-green-950/40 border border-slate-200 dark:border-green-800/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-green-900/60 rounded-xl text-sm focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
                 >
-                  <option value="lose_weight">Lose Weight (Caloric Deficit)</option>
-                  <option value="gain_weight">Gain Weight (Caloric Surplus)</option>
-                  <option value="maintain_weight">Maintain Current Weight</option>
-                  <option value="build_muscle">Build Lean Muscle Mass</option>
-                  <option value="fat_loss">Direct Body Fat Loss</option>
-                  <option value="healthy_lifestyle">General Healthy Lifestyle</option>
-                  <option value="medical_diet">Therapeutic/Medical Diet Guidance</option>
+                  <option value="lose_weight">{t("af_goal_lose")}</option>
+                  <option value="gain_weight">{t("af_goal_gain")}</option>
+                  <option value="maintain_weight">{t("af_goal_maint")}</option>
+                  <option value="build_muscle">{t("af_goal_musc")}</option>
+                  <option value="fat_loss">{t("af_goal_fat")}</option>
+                  <option value="healthy_lifestyle">{t("af_goal_health")}</option>
+                  <option value="medical_diet">{t("af_goal_med")}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                  Dietary Category Preference
-                </label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_diet_pref")}</label>
                 <select
                   value={prefs.dietType}
                   onChange={(e) => handlePrefsChange("dietType", e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50/50 dark:bg-green-950/40 border border-slate-200 dark:border-green-800/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-green-900/60 rounded-xl text-sm focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
                 >
-                  <option value="vegetarian">Vegetarian (No meat/fish)</option>
-                  <option value="vegan">Vegan (No animal products)</option>
-                  <option value="eggetarian">Eggetarian (Eggs allowed, no meat)</option>
-                  <option value="non_vegetarian">Non-Vegetarian (Meat/poultry/fish allowed)</option>
-                  <option value="jain">Jain Diet (Strict vegetarian, no root vegetables)</option>
-                  <option value="keto">Ketogenic (Ultra-low-carb, high-fat)</option>
-                  <option value="low_carb">Low Carbohydrate</option>
-                  <option value="high_protein">High Protein Focus</option>
-                  <option value="mediterranean">Mediterranean Diet</option>
-                  <option value="intermittent_fasting">Intermittent Fasting Schedule</option>
+                  <option value="vegetarian">{t("af_veg")}</option>
+                  <option value="vegan">{t("af_vegan")}</option>
+                  <option value="eggetarian">{t("af_egg")}</option>
+                  <option value="non_vegetarian">{t("af_nonveg")}</option>
+                  <option value="jain">{t("af_jain")}</option>
+                  <option value="keto">{t("af_keto")}</option>
+                  <option value="low_carb">{t("af_lowcarb")}</option>
+                  <option value="high_protein">{t("af_highpro")}</option>
+                  <option value="mediterranean">{t("af_medit")}</option>
+                  <option value="intermittent_fasting">{t("af_fasting")}</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                  Favorite / Preferred Foods
-                </label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_fav")}</label>
                 <input
                   type="text"
                   value={prefs.favoriteFoods}
                   onChange={(e) => handlePrefsChange("favoriteFoods", e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50/50 dark:bg-green-950/40 border border-slate-200 dark:border-green-800/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-green-900/60 rounded-xl text-sm focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
-                  placeholder="e.g. Oats, Chicken breast, Paneer, Apples"
+                  placeholder={t("af_fav_ph")}
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                  Disliked / Avoided Foods
-                </label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_dislike")}</label>
                 <input
                   type="text"
                   value={prefs.dislikedFoods}
                   onChange={(e) => handlePrefsChange("dislikedFoods", e.target.value)}
                   className="w-full px-4 py-3 bg-slate-50/50 dark:bg-green-950/40 border border-slate-200 dark:border-green-800/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-green-900/60 rounded-xl text-sm focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
-                  placeholder="e.g. Broccoli, Mushrooms, Eggplant"
+                  placeholder={t("af_dis_ph")}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Daily Meals Count
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_meals")}</label>
                   <input
                     type="number"
+                    onKeyDown={handleNumberInputKeyDown}
                     required
                     min={2}
                     max={6}
-                    value={prefs.mealsPerDay}
+                    value={prefs.mealsPerDay === 0 ? "" : prefs.mealsPerDay}
                     onChange={(e) => handlePrefsChange("mealsPerDay", Number(e.target.value))}
                     className="w-full px-4 py-3 bg-slate-50/50 dark:bg-green-950/40 border border-slate-200 dark:border-green-800/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-green-900/60 rounded-xl text-sm focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
+                    placeholder="3"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Daily Budget Category
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_budget")}</label>
                   <select
                     value={prefs.dailyBudget}
                     onChange={(e) => handlePrefsChange("dailyBudget", e.target.value)}
                     className="w-full px-4 py-3 bg-slate-50/50 dark:bg-green-950/40 border border-slate-200 dark:border-green-800/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-green-900/60 rounded-xl text-sm focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
                   >
-                    <option value="low">Budget-Friendly (Simple local items)</option>
-                    <option value="medium">Standard / Balanced</option>
-                    <option value="high">Premium (Exotic ingredients, organics)</option>
+                    <option value="low">{t("af_bud_low")}</option>
+                    <option value="medium">{t("af_bud_med")}</option>
+                    <option value="high">{t("af_bud_high")}</option>
                   </select>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Cooking Time Available (Mins)
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_cook_time")}</label>
                   <input
                     type="number"
+                    onKeyDown={handleNumberInputKeyDown}
                     required
                     min={10}
                     max={180}
-                    value={prefs.cookingTime}
+                    value={prefs.cookingTime === 0 ? "" : prefs.cookingTime}
                     onChange={(e) => handlePrefsChange("cookingTime", Number(e.target.value))}
                     className="w-full px-4 py-3 bg-slate-50/50 dark:bg-green-950/40 border border-slate-200 dark:border-green-800/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-green-900/60 rounded-xl text-sm focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
+                    placeholder="30"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                    Snacks Allowed
-                  </label>
+                  <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_snacks")}</label>
                   <select
                     value={prefs.snacksAllowed ? "true" : "false"}
                     onChange={(e) => handlePrefsChange("snacksAllowed", e.target.value === "true")}
                     className="w-full px-4 py-3 bg-slate-50/50 dark:bg-green-950/40 border border-slate-200 dark:border-green-800/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-green-900/60 rounded-xl text-sm focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
                   >
-                    <option value="true">Yes, light mid-meal snacks</option>
-                    <option value="false">No, meals only</option>
+                    <option value="true">{t("af_sn_yes")}</option>
+                    <option value="false">{t("af_sn_no")}</option>
                   </select>
                 </div>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">
-                List any Supplements you consume
-              </label>
+              <label className="block text-xs font-semibold text-slate-500 dark:text-emerald-200/70 uppercase tracking-wider mb-2">{t("af_supp")}</label>
               <input
                 type="text"
                 value={prefs.supplements}
                 onChange={(e) => handlePrefsChange("supplements", e.target.value)}
                 className="w-full px-4 py-3 bg-slate-50/50 dark:bg-green-950/40 border border-slate-200 dark:border-green-800/50 focus:border-green-500 dark:focus:border-green-400 focus:bg-white dark:focus:bg-green-900/60 rounded-xl text-sm focus:outline-none text-slate-800 dark:text-white placeholder:text-slate-400 dark:placeholder:text-emerald-100/50"
-                placeholder="e.g. Whey Protein, Multivitamins, Fish Oil (or None)"
+                placeholder={t("af_sup_ph")}
               />
             </div>
 
             <div className="flex items-start space-x-3 bg-orange-50 dark:bg-orange-950/40 border border-orange-100 dark:border-orange-900/50 p-4 rounded-2xl">
               <ShieldAlert className="h-5 w-5 text-orange-600 dark:text-orange-500 shrink-0 mt-0.5" />
               <p className="text-xs text-orange-800 dark:text-orange-200 leading-relaxed font-medium">
-                <strong className="font-bold">Clinical Safety Check:</strong> By checking 'Generate Diet Plan', you acknowledge that the AI-powered recommendations do not replace medical consults. Always seek professional advice for chronic gastrointestinal, renal, or endocrine disorders.
+                <strong className="font-bold">Clinical Safety Check:</strong> {t("af_safety")}
               </p>
             </div>
           </div>
@@ -775,7 +736,7 @@ export default function AssessForm({
               className="flex items-center space-x-1 px-5 py-3 border border-slate-200 text-slate-600 dark:text-emerald-100/90 hover:border-slate-300 hover:text-slate-800 rounded-xl transition-colors font-medium cursor-pointer"
             >
               <ChevronLeft className="h-4 w-4" />
-              <span>Back</span>
+              <span>{t("af_btn_back")}</span>
             </button>
           ) : (
             <div></div>
@@ -789,17 +750,17 @@ export default function AssessForm({
             {isSubmitting ? (
               <>
                 <Loader2 className="h-5 w-5 animate-spin" />
-                <span>AI is Analysing Parameters...</span>
+                <span>{t('assess_generating')}</span>
               </>
             ) : step < 3 ? (
               <>
-                <span>Continue</span>
+                <span>{t("af_btn_cont")}</span>
                 <ChevronRight className="h-4 w-4" />
               </>
             ) : (
               <>
                 <Sparkles className="h-4 w-4 animate-pulse" />
-                <span>Generate Diet Plan</span>
+                <span>{t('assess_submit')}</span>
               </>
             )}
           </button>

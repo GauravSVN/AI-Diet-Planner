@@ -57,14 +57,14 @@ export default function Sidebar({
   const navItems = [
     { id: "dashboard", label: t("nav_home"), icon: LayoutDashboard },
     { id: "profile", label: t("nav_profile"), icon: User },
-    { id: "assessment", label: "Health Assessment", icon: ClipboardList },
+    { id: "assessment", label: t("nav_assessment"), icon: ClipboardList },
     { id: "diet-plan", label: t("nav_diet"), icon: Apple },
-    { id: "nutrition-report", label: "Nutrition Report", icon: FileText },
+    { id: "nutrition-report", label: t("nav_report"), icon: FileText },
     { id: "bmi-calc", label: t("nav_bmi"), icon: Activity },
     { id: "water-intake", label: t("nav_water"), icon: GlassWater },
     { id: "meal-planner", label: t("nav_meal"), icon: CalendarDays },
     { id: "progress", label: t("nav_progress"), icon: TrendingUp },
-    { id: "history", label: "History", icon: History },
+    { id: "history", label: t("nav_history"), icon: History },
     { id: "feedback", label: t("nav_feedback"), icon: MessageSquareHeart },
     { id: "settings", label: t("nav_settings"), icon: Settings },
   ];
@@ -132,7 +132,7 @@ export default function Sidebar({
                 {userName}
               </h4>
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400 capitalize bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-full inline-block">
-                {userRole}
+                {userRole === "admin" ? t('nav_role_admin') : userRole === "nutritionist" ? t('nav_role_nutritionist') : t('nav_role_user')}
               </span>
             </div>
           )}

@@ -98,7 +98,7 @@ export default function App() {
   const [isGeneratingPlan, setIsGeneratingPlan] = React.useState(false);
 
   // Settings options
-  const { language, setLanguage } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const [theme, setTheme] = React.useState<"light" | "dark">("dark");
 
   // Load token on startup
@@ -358,7 +358,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen font-sans ${theme === "dark" ? "dark bg-slate-950 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-slate-950 to-slate-950 text-slate-100" : "bg-gradient-to-br from-indigo-100 via-purple-50 to-teal-100 text-slate-900"}`}>
+    <div className={`min-h-screen font-sans ${theme === "dark" ? "dark bg-slate-950 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-900/20 via-slate-950 to-slate-950 text-slate-100" : "bg-slate-200 text-slate-900"}`}>
       {/* 1. LANDING PAGE VIEW */}
       {activeSection !== "dashboard" ? (
         <div className="pt-16">
@@ -475,21 +475,21 @@ export default function App() {
                 )}
 
                 {currentTab === "nutrition-report" && (
-                  <div className="max-w-4xl mx-auto bg-white/60 dark:bg-slate-950/80 backdrop-blur-2xl p-6 sm:p-10 rounded-[2rem] border border-white/60 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] space-y-8 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] transition-all duration-300">
+                  <div className="max-w-4xl mx-auto bg-white dark:bg-slate-950/80 backdrop-blur-2xl p-6 sm:p-10 rounded-[2rem] border border-white/40 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] space-y-8 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] transition-all duration-300">
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 dark:border-slate-800/50 pb-5">
                       <div>
                         <h2 className="text-2xl font-black text-slate-800 dark:text-white flex items-center space-x-3">
                           <div className="p-2 bg-green-100 dark:bg-green-900/50 rounded-xl">
                             <FileText className="h-6 w-6 text-green-600 dark:text-green-400" />
                           </div>
-                          <span>Clinical Nutrition Report</span>
+                          <span>{t('report_title')}</span>
                         </h2>
-                        <p className="text-sm text-slate-500 mt-1">AI-generated metabolic analysis based on your assessment.</p>
+                        <p className="text-sm text-slate-500 mt-1">{t('report_subtitle')}</p>
                       </div>
                       {nutritionReport && (
                         <div className="px-4 py-2 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 rounded-xl font-bold text-sm border border-green-200 dark:border-green-800/50 shadow-sm flex items-center space-x-2">
                           <UserCheck className="h-4 w-4" />
-                          <span>Status: Profile Analyzed</span>
+                          <span>{t('report_status')}</span>
                         </div>
                       )}
                     </div>
@@ -501,7 +501,7 @@ export default function App() {
                           <div className="bg-gradient-to-br from-blue-50 to-blue-100/40 dark:from-blue-950/30 dark:to-slate-900/50 p-5 rounded-2xl border border-blue-100/50 dark:border-blue-900/30 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 transition-all duration-300 group">
                             <div className="flex items-center space-x-2 mb-3">
                               <Scale className="h-4 w-4 text-blue-500 group-hover:scale-110 transition-transform" />
-                              <span className="text-[10px] font-bold text-blue-600/80 dark:text-blue-400 uppercase tracking-wider">Current BMI</span>
+                              <span className="text-[10px] font-bold text-blue-600/80 dark:text-blue-400 uppercase tracking-wider">{t("report_current_bmi")}</span>
                             </div>
                             <span className="text-3xl font-black text-blue-700 dark:text-blue-300 block">{nutritionReport.bmi || "--"}</span>
                           </div>
@@ -509,7 +509,7 @@ export default function App() {
                           <div className="bg-gradient-to-br from-purple-50 to-purple-100/40 dark:from-purple-950/30 dark:to-slate-900/50 p-5 rounded-2xl border border-purple-100/50 dark:border-purple-900/30 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 group">
                             <div className="flex items-center space-x-2 mb-3">
                               <Activity className="h-4 w-4 text-purple-500 group-hover:scale-110 transition-transform" />
-                              <span className="text-[10px] font-bold text-purple-600/80 dark:text-purple-400 uppercase tracking-wider">Category</span>
+                              <span className="text-[10px] font-bold text-purple-600/80 dark:text-purple-400 uppercase tracking-wider">{t('report_cat')}</span>
                             </div>
                             <span className="text-xl font-black text-purple-700 dark:text-purple-300 block truncate leading-tight">{nutritionReport.weightCategory || "--"}</span>
                           </div>
@@ -517,7 +517,7 @@ export default function App() {
                           <div className="bg-gradient-to-br from-orange-50 to-orange-100/40 dark:from-orange-950/30 dark:to-slate-900/50 p-5 rounded-2xl border border-orange-100/50 dark:border-orange-900/30 hover:-translate-y-1 hover:shadow-lg hover:shadow-orange-500/10 transition-all duration-300 group">
                             <div className="flex items-center space-x-2 mb-3">
                               <Flame className="h-4 w-4 text-orange-500 group-hover:scale-110 transition-transform" />
-                              <span className="text-[10px] font-bold text-orange-600/80 dark:text-orange-400 uppercase tracking-wider">Base BMR</span>
+                              <span className="text-[10px] font-bold text-orange-600/80 dark:text-orange-400 uppercase tracking-wider">{t('report_bmr')}</span>
                             </div>
                             <span className="text-3xl font-black text-orange-700 dark:text-orange-300 block">{nutritionReport.bmr || "--"} <span className="text-xs font-bold opacity-60">kcal</span></span>
                           </div>
@@ -525,7 +525,7 @@ export default function App() {
                           <div className="bg-gradient-to-br from-rose-50 to-rose-100/40 dark:from-rose-950/30 dark:to-slate-900/50 p-5 rounded-2xl border border-rose-100/50 dark:border-rose-900/30 hover:-translate-y-1 hover:shadow-lg hover:shadow-rose-500/10 transition-all duration-300 group">
                             <div className="flex items-center space-x-2 mb-3">
                               <Target className="h-4 w-4 text-rose-500 group-hover:scale-110 transition-transform" />
-                              <span className="text-[10px] font-bold text-rose-600/80 dark:text-rose-400 uppercase tracking-wider">Daily TDEE</span>
+                              <span className="text-[10px] font-bold text-rose-600/80 dark:text-rose-400 uppercase tracking-wider">{t('report_tdee')}</span>
                             </div>
                             <span className="text-3xl font-black text-rose-700 dark:text-rose-300 block">{nutritionReport.tdee || "--"} <span className="text-xs font-bold opacity-60">kcal</span></span>
                           </div>
@@ -535,12 +535,12 @@ export default function App() {
                         <div className="bg-slate-50 dark:bg-slate-900/50 p-6 rounded-2xl border border-slate-200/60 dark:border-slate-800/80 hover:border-green-500/40 transition-all">
                           <h3 className="text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-2 flex items-center space-x-2">
                             <Activity className="h-4 w-4 text-green-500" />
-                            <span>Metabolic Summary & Ideal Range</span>
+                            <span>{t('report_summary')}</span>
                           </h3>
                           <p className="text-slate-600 dark:text-slate-300 font-medium leading-relaxed mt-3 bg-white dark:bg-black/20 p-4 rounded-xl border border-slate-100 dark:border-slate-800/50 shadow-inner">{nutritionReport.summaryText}</p>
                           <div className="mt-4 flex items-center space-x-2 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-400 w-fit px-4 py-2 rounded-xl border border-emerald-100 dark:border-emerald-800/30">
                             <Target className="h-4 w-4" />
-                            <span className="font-bold text-sm">Target Ideal Weight: {nutritionReport.idealWeightRange || "N/A"}</span>
+                            <span className="font-bold text-sm">{t('report_target_weight')}: {nutritionReport.idealWeightRange || "N/A"}</span>
                           </div>
                         </div>
 
@@ -549,7 +549,7 @@ export default function App() {
                           <div className="bg-orange-50/50 dark:bg-orange-950/10 p-6 rounded-2xl border border-orange-100 dark:border-orange-900/30 space-y-4 hover:border-orange-300 dark:hover:border-orange-700 transition-colors">
                             <h3 className="text-sm font-bold text-orange-800 dark:text-orange-400 uppercase tracking-wider flex items-center space-x-2">
                               <ShieldAlert className="h-4 w-4" />
-                              <span>Deficiencies Warning</span>
+                              <span>{t('report_deficiencies')}</span>
                             </h3>
                             <div className="flex flex-wrap gap-2">
                               {(nutritionReport.deficiencies || []).map((def: string, idx: number) => (
@@ -558,7 +558,7 @@ export default function App() {
                                 </span>
                               ))}
                               {(!nutritionReport.deficiencies || nutritionReport.deficiencies.length === 0) && (
-                                <span className="text-sm text-slate-500 italic">No major deficiencies detected.</span>
+                                <span className="text-sm text-slate-500 italic">{t("report_no_def")}</span>
                               )}
                             </div>
                           </div>
@@ -566,7 +566,7 @@ export default function App() {
                           <div className="bg-green-50/50 dark:bg-green-950/10 p-6 rounded-2xl border border-green-100 dark:border-green-900/30 space-y-4 hover:border-green-300 dark:hover:border-green-700 transition-colors">
                             <h3 className="text-sm font-bold text-green-800 dark:text-green-400 uppercase tracking-wider flex items-center space-x-2">
                               <Sparkles className="h-4 w-4 text-green-500" />
-                              <span>Suggested Superfoods</span>
+                              <span>{t('report_superfoods')}</span>
                             </h3>
                             <div className="flex flex-wrap gap-2">
                               {(nutritionReport.superfoods || []).map((food: string, idx: number) => (
@@ -575,7 +575,7 @@ export default function App() {
                                 </span>
                               ))}
                               {(!nutritionReport.superfoods || nutritionReport.superfoods.length === 0) && (
-                                <span className="text-sm text-slate-500 italic">Complete assessment to get superfood recommendations.</span>
+                                <span className="text-sm text-slate-500 italic">{t("report_no_super")}</span>
                               )}
                             </div>
                           </div>
@@ -587,15 +587,21 @@ export default function App() {
                           <FileText className="h-10 w-10 text-slate-300 dark:text-slate-600" />
                         </div>
                         <div>
-                          <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300">Report Unavailable</h3>
-                          <p className="text-slate-500 max-w-sm mt-1 text-sm leading-relaxed">Complete your health assessment to let our AI generate a customized clinical report for you.</p>
+                          <h3 className="text-lg font-bold text-slate-700 dark:text-slate-300">{t('report_unavail')}</h3>
+                          <p className="text-slate-500 max-w-sm mt-1 text-sm leading-relaxed">{t('report_unavail_sub')}</p>
+                          <button 
+                            onClick={() => setCurrentTab("assessment")}
+                            className="mt-6 px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-md transition-all font-bold text-sm cursor-pointer"
+                          >
+                            {t('nav_assessment')}
+                          </button>
                         </div>
                       </div>
                     )}
                   </div>
                 )}
 
-                {currentTab === "bmi-calc" && <BmiCalculatorView />}
+                {currentTab === "bmi-calc" && <BmiCalculatorView userData={currentUser?.personalInfo} />}
 
                 {currentTab === "water-intake" && (
                   <WaterIntakeView 
@@ -646,7 +652,7 @@ export default function App() {
       {/* 3. LOGIN / REGISTRATION MODAL FORM */}
       {authMode && (
         <div className="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white/90 dark:bg-slate-950/80 backdrop-blur-xl max-w-md w-full rounded-3xl shadow-2xl dark:shadow-[0_0_40px_rgba(34,197,94,0.15)] border border-slate-100 dark:border-slate-800 overflow-hidden relative p-6 sm:p-8 space-y-6">
+          <div className="bg-white dark:bg-slate-950/80 backdrop-blur-xl max-w-md w-full rounded-3xl shadow-2xl dark:shadow-[0_0_40px_rgba(34,197,94,0.15)] border border-slate-100 dark:border-slate-800 overflow-hidden relative p-6 sm:p-8 space-y-6">
             <button
               onClick={() => setAuthMode(null)}
               className="absolute top-4 right-4 p-1.5 hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-400 hover:text-slate-600 dark:hover:text-white rounded-full transition-colors cursor-pointer"

@@ -1,5 +1,6 @@
 import React from "react";
 import { Apple, LogIn, Menu, X } from "lucide-react";
+import { useLanguage } from "../LanguageContext";
 
 interface NavbarProps {
   onNavigate: (page: string) => void;
@@ -16,15 +17,16 @@ export default function Navbar({
   onLogout,
   onOpenAuth,
 }: NavbarProps) {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = React.useState(false);
 
   const menuItems = [
-    { id: "home", label: "Home" },
-    { id: "features", label: "Features" },
-    { id: "how-it-works", label: "How It Works" },
-    { id: "testimonials", label: "Testimonials" },
-    { id: "faq", label: "FAQ" },
-    { id: "contact", label: "Contact" },
+    { id: "home", label: t("top_home") },
+    { id: "features", label: t("top_features") },
+    { id: "how-it-works", label: t("top_how") },
+    { id: "testimonials", label: t("top_test") },
+    { id: "faq", label: t("top_faq") },
+    { id: "contact", label: t("top_contact") },
   ];
 
   const handleItemClick = (id: string) => {
@@ -76,13 +78,13 @@ export default function Navbar({
                   onClick={() => onNavigate("dashboard")}
                   className="px-4 py-2 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-xl shadow-md shadow-green-100 dark:shadow-green-900/50 hover:-translate-y-0.5 transition-all cursor-pointer"
                 >
-                  My Dashboard
+                  {t("top_dashboard")}
                 </button>
                 <button
                   onClick={onLogout}
                   className="px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-slate-800 dark:hover:text-white border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-500 rounded-xl transition-all cursor-pointer hover:-translate-y-0.5"
                 >
-                  Sign Out
+                  {t("top_signout")}
                 </button>
               </>
             ) : (
@@ -92,13 +94,13 @@ export default function Navbar({
                   className="flex items-center space-x-1 px-4 py-2 text-sm font-medium text-slate-600 dark:text-slate-300 hover:text-green-600 dark:hover:text-green-400 transition-colors cursor-pointer"
                 >
                   <LogIn className="h-4 w-4" />
-                  <span>Login</span>
+                  <span>{t("top_login")}</span>
                 </button>
                 <button
                   onClick={() => onOpenAuth("register")}
                   className="px-4 py-2 text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-xl shadow-md shadow-green-100 dark:shadow-green-900/50 hover:-translate-y-0.5 transition-all cursor-pointer"
                 >
-                  Register
+                  {t("top_register")}
                 </button>
               </>
             )}
@@ -143,7 +145,7 @@ export default function Navbar({
                     }}
                     className="w-full px-4 py-2.5 text-center text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-xl shadow-md transition-all cursor-pointer"
                   >
-                    My Dashboard
+                    {t("top_dashboard")}
                   </button>
                   <button
                     onClick={() => {
@@ -152,7 +154,7 @@ export default function Navbar({
                     }}
                     className="w-full px-4 py-2.5 text-center text-sm font-medium text-slate-600 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
                   >
-                    Sign Out
+                    {t("top_signout")}
                   </button>
                 </>
               ) : (
@@ -164,7 +166,7 @@ export default function Navbar({
                     }}
                     className="w-full px-4 py-2.5 text-center text-sm font-medium text-slate-600 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors cursor-pointer"
                   >
-                    Login
+                    {t("top_login")}
                   </button>
                   <button
                     onClick={() => {
@@ -173,7 +175,7 @@ export default function Navbar({
                     }}
                     className="w-full px-4 py-2.5 text-center text-sm font-semibold text-white bg-green-600 hover:bg-green-700 rounded-xl shadow-md transition-all cursor-pointer"
                   >
-                    Register
+                    {t("top_register")}
                   </button>
                 </>
               )}

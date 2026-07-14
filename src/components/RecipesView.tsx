@@ -1,12 +1,14 @@
 import React from "react";
 import { Search, Sparkles, Clock, Flame, Award, BookOpen, ChevronDown, ChevronUp } from "lucide-react";
 import { Recipe } from "../types";
+import { useLanguage } from "../LanguageContext";
 
 interface RecipesViewProps {
   planRecipes: Recipe[];
 }
 
 export default function RecipesView({ planRecipes }: RecipesViewProps) {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = React.useState("");
   const [activeDiet, setActiveDiet] = React.useState<string>("all");
   const [expandedRecipeId, setExpandedRecipeId] = React.useState<string | null>(null);
@@ -101,11 +103,11 @@ export default function RecipesView({ planRecipes }: RecipesViewProps) {
   };
 
   const dietTabs = [
-    { code: "all", label: "All Recipes" },
-    { code: "vegetarian", label: "Vegetarian" },
-    { code: "vegan", label: "Vegan" },
-    { code: "keto", label: "Keto" },
-    { code: "non_vegetarian", label: "Non-Veg" },
+    { code: "all", label: t("recipe_all") },
+    { code: "vegetarian", label: t("recipe_veg") },
+    { code: "vegan", label: t("recipe_vegan") },
+    { code: "keto", label: t("recipe_keto") },
+    { code: "non_vegetarian", label: t("recipe_nonveg") },
   ];
 
   return (
@@ -115,9 +117,9 @@ export default function RecipesView({ planRecipes }: RecipesViewProps) {
         <div>
           <h2 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight flex items-center space-x-2">
             <BookOpen className="h-5 w-5 text-green-600" />
-            <span>AI Recipe Suggestions Explorer</span>
+            <span>{t('hist_title')}</span>
           </h2>
-          <p className="text-xs text-slate-500 dark:text-emerald-200/70 mt-0.5 font-medium">Explore dishes matching your calorie limits and diet preferences.</p>
+          <p className="text-xs text-slate-500 dark:text-emerald-200/70 mt-0.5 font-medium">{t('hist_subtitle')}</p>
         </div>
 
         {/* Search input */}
@@ -127,7 +129,7 @@ export default function RecipesView({ planRecipes }: RecipesViewProps) {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Search healthy recipes..."
+            placeholder={t("recipe_search")}
             className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 focus:border-green-500 focus:bg-white dark:focus:bg-slate-800/90 rounded-xl text-sm focus:outline-none transition-all"
           />
         </div>
@@ -182,15 +184,15 @@ export default function RecipesView({ planRecipes }: RecipesViewProps) {
                   {/* Summary row */}
                   <div className="grid grid-cols-3 gap-3 text-center">
                     <div className="p-2 bg-slate-50 dark:bg-black/40 border border-transparent dark:border-slate-800/50 rounded-xl text-xs group-hover:border-green-500/30 transition-all">
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold block uppercase">Time</span>
-                      <span className="font-extrabold text-slate-700 dark:text-white block mt-0.5">{recipe.cookingTime} min</span>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold block uppercase">{t("recipe_time")}</span>
+                      <span className="font-extrabold text-slate-700 dark:text-white block mt-0.5">{recipe.cookingTime} {t("recipe_min")}</span>
                     </div>
                     <div className="p-2 bg-slate-50 dark:bg-black/40 border border-transparent dark:border-slate-800/50 rounded-xl text-xs group-hover:border-orange-500/30 transition-all">
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold block uppercase">Calories</span>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold block uppercase">{t("dash_calories")}</span>
                       <span className="font-extrabold text-orange-600 dark:text-orange-400 block mt-0.5">{recipe.calories} kcal</span>
                     </div>
                     <div className="p-2 bg-slate-50 dark:bg-black/40 border border-transparent dark:border-slate-800/50 rounded-xl text-xs group-hover:border-green-500/30 transition-all">
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold block uppercase">Protein</span>
+                      <span className="text-[10px] text-slate-400 dark:text-slate-500 font-bold block uppercase">{t("dash_protein")}</span>
                       <span className="font-extrabold text-green-700 dark:text-green-400 block mt-0.5">{recipe.protein}g</span>
                     </div>
                   </div>
@@ -200,7 +202,7 @@ export default function RecipesView({ planRecipes }: RecipesViewProps) {
                     <div className="space-y-4 pt-4 border-t border-slate-100/60 animate-in fade-in duration-200">
                       {/* Ingredients */}
                       <div className="space-y-1.5">
-                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Ingredients list</span>
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">{t("recipe_ingred")}</span>
                         <ul className="list-disc list-inside text-xs text-slate-600 dark:text-emerald-100/90 space-y-1 pl-1">
                           {recipe.ingredients.map((ing, idx) => (
                             <li key={idx}>{ing}</li>
@@ -210,7 +212,7 @@ export default function RecipesView({ planRecipes }: RecipesViewProps) {
 
                       {/* Instructions */}
                       <div className="space-y-1.5">
-                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">Instructions Steps</span>
+                        <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block">{t("recipe_instruct")}</span>
                         <ol className="list-decimal list-inside text-xs text-slate-600 dark:text-emerald-100/90 space-y-1 pl-1">
                           {recipe.instructions.map((inst, idx) => (
                             <li key={idx} className="leading-relaxed">{inst}</li>
@@ -225,7 +227,7 @@ export default function RecipesView({ planRecipes }: RecipesViewProps) {
           })
         ) : (
           <div className="md:col-span-2 py-12 text-center text-slate-400 text-sm">
-            No recipes matching the search filters. Try clearing the search.
+            {t("recipe_no_match")}
           </div>
         )}
       </div>

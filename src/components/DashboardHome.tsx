@@ -76,7 +76,7 @@ export default function DashboardHome({
         <div className="space-y-2">
           <span className="inline-flex items-center space-x-1.5 px-3 py-1 bg-green-500/10 text-green-400 border border-green-500/20 rounded-full text-xs font-semibold">
             <Sparkles className="h-3.5 w-3.5" />
-            <span>AI Powered Metabolism</span>
+            <span>{t("dash_ai_metabolism")}</span>
           </span>
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
             {t("dash_welcome")}, <span className="text-emerald-300 dark:text-green-400">{user.name}</span>!
@@ -93,7 +93,7 @@ export default function DashboardHome({
             onClick={() => onNavigateTab("assessment")}
             className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-lg shadow-green-900/40 transition-all shrink-0 cursor-pointer"
           >
-            Start Assessment
+            {t("dash_start_assessment")}
           </button>
         )}
       </div>
@@ -101,7 +101,7 @@ export default function DashboardHome({
       {/* Stats Widgets */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {/* Calorie Widget */}
-        <div className="bg-white/60 dark:bg-slate-950/80 backdrop-blur-2xl p-5 rounded-2xl border border-white/60 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white/90 dark:hover:bg-slate-900/80 dark:hover:shadow-green-900/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:-translate-y-2 dark:hover:border-green-600/50 transition-all duration-300 flex items-center space-x-4">
+        <div className="bg-white dark:bg-slate-950/80 backdrop-blur-2xl p-5 rounded-2xl border border-white/40 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white dark:hover:bg-slate-900/80 dark:hover:shadow-green-900/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:-translate-y-2 dark:hover:border-green-600/50 transition-all duration-300 flex items-center space-x-4">
           <div className="p-3 bg-orange-50 text-orange-600 rounded-xl">
             <Flame className="h-6 w-6" />
           </div>
@@ -118,7 +118,7 @@ export default function DashboardHome({
         </div>
 
         {/* Water Widget */}
-        <div className="bg-white/60 dark:bg-slate-950/80 backdrop-blur-2xl p-5 rounded-2xl border border-white/60 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white/90 dark:hover:bg-slate-900/80 dark:hover:shadow-green-900/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:-translate-y-2 dark:hover:border-green-600/50 transition-all duration-300 flex items-center space-x-4">
+        <div className="bg-white dark:bg-slate-950/80 backdrop-blur-2xl p-5 rounded-2xl border border-white/40 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white dark:hover:bg-slate-900/80 dark:hover:shadow-green-900/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:-translate-y-2 dark:hover:border-green-600/50 transition-all duration-300 flex items-center space-x-4">
           <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
             <Droplet className="h-6 w-6" />
           </div>
@@ -137,31 +137,31 @@ export default function DashboardHome({
         </div>
 
         {/* Weight Widget */}
-        <div className="bg-white/60 dark:bg-slate-950/80 backdrop-blur-2xl p-5 rounded-2xl border border-white/60 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white/90 dark:hover:bg-slate-900/80 dark:hover:shadow-green-900/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:-translate-y-2 dark:hover:border-green-600/50 transition-all duration-300 flex items-center space-x-4">
+        <div className="bg-white dark:bg-slate-950/80 backdrop-blur-2xl p-5 rounded-2xl border border-white/40 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white dark:hover:bg-slate-900/80 dark:hover:shadow-green-900/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:-translate-y-2 dark:hover:border-green-600/50 transition-all duration-300 flex items-center space-x-4">
           <div className="p-3 bg-green-50 text-green-600 rounded-xl">
             <Scale className="h-6 w-6" />
           </div>
           <div>
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Current Weight</span>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t("dash_current_weight")}</span>
             <p className="text-xl font-black text-slate-800 dark:text-white mt-0.5">
               {currentWeight ? `${currentWeight} kg` : "--"}
             </p>
             <span className="text-[10px] text-slate-400 font-medium">
-              BMI: {currentBmi ? currentBmi : "--"}
+              {t("dash_bmi_label")}: {currentBmi ? currentBmi : "--"}
             </span>
           </div>
         </div>
 
         {/* Exercise Widget */}
-        <div className="bg-white/60 dark:bg-slate-950/80 backdrop-blur-2xl p-5 rounded-2xl border border-white/60 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white/90 dark:hover:bg-slate-900/80 dark:hover:shadow-green-900/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:-translate-y-2 dark:hover:border-green-600/50 transition-all duration-300 flex items-center space-x-4">
+        <div className="bg-white dark:bg-slate-950/80 backdrop-blur-2xl p-5 rounded-2xl border border-white/40 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white dark:hover:bg-slate-900/80 dark:hover:shadow-green-900/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] hover:-translate-y-2 dark:hover:border-green-600/50 transition-all duration-300 flex items-center space-x-4">
           <div className="p-3 bg-purple-50 text-purple-600 rounded-xl">
             <Timer className="h-6 w-6" />
           </div>
           <div>
-            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Exercise Log</span>
-            <p className="text-xl font-black text-slate-800 dark:text-white mt-0.5">{exerciseMins} mins</p>
+            <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">{t("dash_exercise_log")}</span>
+            <p className="text-xl font-black text-slate-800 dark:text-white mt-0.5">{exerciseMins} {t("dash_mins")}</p>
             <span className="text-[10px] text-slate-500 font-bold">
-              {exerciseMins >= 30 ? "Daily target hit!" : "Keep moving!"}
+              {exerciseMins >= 30 ? t("dash_target_hit") : t("dash_keep_moving")}
             </span>
           </div>
         </div>
@@ -170,16 +170,16 @@ export default function DashboardHome({
       {/* Main Grid Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Quick Log Form */}
-        <div className="bg-white/60 dark:bg-slate-950/80 backdrop-blur-2xl p-6 rounded-3xl border border-white/60 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white/90 dark:hover:bg-slate-900/80 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-green-900/30 dark:hover:border-green-600/50 hover:-translate-y-2 transition-all duration-300 space-y-5 lg:col-span-1">
+        <div className="bg-white dark:bg-slate-950/80 backdrop-blur-2xl p-6 rounded-3xl border border-white/40 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white dark:hover:bg-slate-900/80 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-green-900/30 dark:hover:border-green-600/50 hover:-translate-y-2 transition-all duration-300 space-y-5 lg:col-span-1">
           <div className="space-y-1">
-            <h3 className="text-lg font-bold text-slate-800 dark:text-white tracking-tight">Quick Health Log</h3>
-            <p className="text-xs text-slate-500">Record daily health parameters to update metrics.</p>
+            <h3 className="text-lg font-bold text-slate-800 dark:text-white tracking-tight">{t("dash_quick_log")}</h3>
+            <p className="text-xs text-slate-500">{t("dash_quick_log_sub")}</p>
           </div>
 
           <form onSubmit={handleQuickSubmit} className="space-y-4">
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                Current Weight (kg)
+                {t("dash_quick_weight_lbl")}
               </label>
               <input
                 type="number"
@@ -193,7 +193,7 @@ export default function DashboardHome({
 
             <div>
               <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                Water Log (ml)
+                {t("dash_quick_water_lbl")}
               </label>
               <input
                 type="number"
@@ -207,7 +207,7 @@ export default function DashboardHome({
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                  Calories Consumed
+                  {t("dash_quick_cal_lbl")}
                 </label>
                 <input
                   type="number"
@@ -219,7 +219,7 @@ export default function DashboardHome({
               </div>
               <div>
                 <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider mb-1.5">
-                  Exercise Mins
+                  {t("dash_quick_ex_lbl")}
                 </label>
                 <input
                   type="number"
@@ -236,25 +236,25 @@ export default function DashboardHome({
               className="w-full py-3 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl shadow-md transition-all flex items-center justify-center space-x-1.5 cursor-pointer text-sm"
             >
               <Plus className="h-4 w-4" />
-              <span>Log Daily Activity</span>
+              <span>{t("dash_log_btn")}</span>
             </button>
           </form>
         </div>
 
         {/* AI Diet Highlights Summary */}
-        <div className="bg-white/60 dark:bg-slate-950/80 backdrop-blur-2xl p-6 rounded-3xl border border-white/60 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white/90 dark:hover:bg-slate-900/80 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-green-900/30 dark:hover:border-green-600/50 hover:-translate-y-2 transition-all duration-300 space-y-6 lg:col-span-2 flex flex-col justify-between">
+        <div className="bg-white dark:bg-slate-950/80 backdrop-blur-2xl p-6 rounded-3xl border border-white/40 dark:border-green-900/40 shadow-[0_8px_32px_rgba(0,0,0,0.04)] hover:bg-white dark:hover:bg-slate-900/80 hover:shadow-[0_8px_32px_rgba(0,0,0,0.08)] dark:hover:shadow-green-900/30 dark:hover:border-green-600/50 hover:-translate-y-2 transition-all duration-300 space-y-6 lg:col-span-2 flex flex-col justify-between">
           <div className="space-y-4">
             <div className="flex justify-between items-center border-b border-slate-50 pb-3">
               <h3 className="text-lg font-bold text-slate-800 dark:text-white tracking-tight flex items-center space-x-2">
                 <Apple className="h-5 w-5 text-green-500" />
-                <span>Today's Plan Overview</span>
+                <span>{t("dash_today_plan")}</span>
               </h3>
               {latestPlan && (
                 <button
                   onClick={() => onNavigateTab("diet-plan")}
                   className="text-xs font-bold text-green-600 hover:text-green-700 flex items-center space-x-1 cursor-pointer"
                 >
-                  <span>Full Meals Guide</span>
+                  <span>{t("dash_full_meals")}</span>
                   <ArrowRight className="h-3.5 w-3.5" />
                 </button>
               )}
@@ -263,31 +263,31 @@ export default function DashboardHome({
             {latestPlan ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="space-y-3">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Dietary Targets</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">{t("dash_targets")}</span>
                   <div className="space-y-2">
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">Protein Target</span>
+                      <span className="text-slate-500">{t("dash_prot_target")}</span>
                       <span className="font-bold text-slate-700 dark:text-white">{latestPlan.proteinGrams}g</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">Fiber Target</span>
+                      <span className="text-slate-500">{t("dash_fiber_target")}</span>
                       <span className="font-bold text-slate-700 dark:text-white">{latestPlan.fiberGrams}g</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">Fats Limit</span>
+                      <span className="text-slate-500">{t("dash_fat_limit")}</span>
                       <span className="font-bold text-slate-700 dark:text-white">{latestPlan.fatGrams}g</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-slate-500">Hydration target</span>
-                      <span className="font-bold text-blue-600">{latestPlan.waterIntakeLitres} Litres</span>
+                      <span className="text-slate-500">{t("dash_hyd_target")}</span>
+                      <span className="font-bold text-blue-600">{latestPlan.waterIntakeLitres} L</span>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">AI Custom Advice</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">{t("dash_ai_advice")}</span>
                   <p className="text-xs text-slate-600 dark:text-emerald-100/90 leading-relaxed bg-slate-50 dark:bg-black/40 p-3 rounded-xl border border-slate-100 dark:border-slate-800/50 hover:border-green-500/30 transition-all">
-                    {report?.summaryText || "Remember to space out your water intake equally and chew your food slowly to maximize assimilation."}
+                    {report?.summaryText || t("dash_advice_fallback")}
                   </p>
                 </div>
               </div>
@@ -297,7 +297,7 @@ export default function DashboardHome({
                   <AlertCircle className="h-6 w-6 text-slate-400" />
                 </div>
                 <p className="text-slate-500 text-sm max-w-sm mx-auto">
-                  No diet summary available. Go to <strong>Health Assessment</strong> to let Gemini calibrate your custom numbers.
+                  {t("dash_no_summary")}
                 </p>
               </div>
             )}

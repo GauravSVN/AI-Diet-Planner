@@ -1,5 +1,6 @@
 import React from "react";
 import { GlassWater, Droplet, Clock, Plus, ShieldAlert, CheckCircle, Volume2 } from "lucide-react";
+import { useLanguage } from "../LanguageContext";
 
 interface WaterIntakeViewProps {
   initialGoalLitres: number;
@@ -12,6 +13,7 @@ export default function WaterIntakeView({
   initialConsumedMl,
   onLogWater,
 }: WaterIntakeViewProps) {
+  const { t } = useLanguage();
   // Activity Level State
   const [activityLevel, setActivityLevel] = React.useState<"sedentary" | "active" | "athlete">("sedentary");
   
@@ -27,10 +29,10 @@ export default function WaterIntakeView({
   const strokeDashoffset = circumference - (pct / 100) * circumference;
 
   const quickButtons = [
-    { label: "+250 ml", ml: 250, sub: "Standard Glass" },
-    { label: "+500 ml", ml: 500, sub: "Small Bottle" },
-    { label: "+750 ml", ml: 750, sub: "Sports Shaker" },
-    { label: "+1000 ml", ml: 1000, sub: "Large Thermos" },
+    { label: "+250 ml", ml: 250, sub: t("water_glass") },
+    { label: "+500 ml", ml: 500, sub: t("water_bottle") },
+    { label: "+750 ml", ml: 750, sub: t("water_shaker") },
+    { label: "+1000 ml", ml: 1000, sub: t("water_thermos") },
   ];
 
   // Reminder settings state
@@ -39,16 +41,16 @@ export default function WaterIntakeView({
   const [notificationStatus, setNotificationStatus] = React.useState<string | null>(null);
 
   const triggerMockSound = () => {
-    setNotificationStatus(`Water Reminder Configured: You will be prompted every ${reminderInterval} minutes to stay hydrated!`);
+    setNotificationStatus(t("water_rem_msg").replace("{0}", reminderInterval.toString()));
     setTimeout(() => {
       setNotificationStatus(null);
     }, 4000);
   };
 
   const getHydrationStatus = () => {
-    if (pct < 30) return { label: "Dehydrated", color: "text-orange-500", bg: "bg-orange-50 dark:bg-orange-950/30", border: "border-orange-200 dark:border-orange-900/50", msg: "Drink water to avoid fatigue." };
-    if (pct < 80) return { label: "On Track", color: "text-blue-500 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-200 dark:border-blue-900/50", msg: "Keep sipping water throughout the day." };
-    return { label: "Optimal", color: "text-emerald-500 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-950/30", border: "border-emerald-200 dark:border-emerald-900/50", msg: "Excellent! You are perfectly hydrated." };
+    if (pct < 30) return { label: t("water_dehydrated"), color: "text-orange-500", bg: "bg-orange-50 dark:bg-orange-950/30", border: "border-orange-200 dark:border-orange-900/50", msg: t("water_dehydrated_msg") };
+    if (pct < 80) return { label: t("water_ontrack"), color: "text-blue-500 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-950/30", border: "border-blue-200 dark:border-blue-900/50", msg: t("water_ontrack_msg") };
+    return { label: t("water_optimal"), color: "text-emerald-500 dark:text-emerald-400", bg: "bg-emerald-50 dark:bg-emerald-950/30", border: "border-emerald-200 dark:border-emerald-900/50", msg: t("water_optimal_msg") };
   };
   const status = getHydrationStatus();
 
@@ -72,9 +74,9 @@ export default function WaterIntakeView({
         <div>
           <h2 className="text-xl font-bold text-slate-800 dark:text-white tracking-tight flex items-center space-x-2">
             <GlassWater className="h-5 w-5 text-blue-500 dark:text-cyan-400 group-hover:scale-110 drop-shadow-[0_0_8px_rgba(34,211,238,0.4)] transition-all" />
-            <span className="dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-cyan-300 dark:to-blue-300">Smart Hydration Tracker</span>
+            <span className="dark:text-transparent dark:bg-clip-text dark:bg-gradient-to-r dark:from-cyan-300 dark:to-blue-300">{t('water_title')}</span>
           </h2>
-          <p className="text-xs text-slate-500 dark:text-cyan-100/70 mt-0.5">Log daily fluid inputs to keep your metabolic rate optimal.</p>
+          <p className="text-xs text-slate-500 dark:text-cyan-100/70 mt-0.5">{t('water_subtitle')}</p>
         </div>
       </div>
 
@@ -93,12 +95,12 @@ export default function WaterIntakeView({
           
           {/* Activity Selector */}
           <div className="flex bg-slate-50 dark:bg-black/40 rounded-xl p-1 mb-2 relative z-10 w-full max-w-[250px] border border-slate-100 dark:border-cyan-900/30">
-            <button onClick={() => setActivityLevel("sedentary")} className={`flex-1 text-[10px] font-bold py-1.5 rounded-lg transition-all ${activityLevel === "sedentary" ? "bg-white dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300 shadow-sm" : "text-slate-400 dark:text-slate-500 hover:text-slate-600"}`}>Sedentary</button>
-            <button onClick={() => setActivityLevel("active")} className={`flex-1 text-[10px] font-bold py-1.5 rounded-lg transition-all ${activityLevel === "active" ? "bg-white dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300 shadow-sm" : "text-slate-400 dark:text-slate-500 hover:text-slate-600"}`}>Active</button>
-            <button onClick={() => setActivityLevel("athlete")} className={`flex-1 text-[10px] font-bold py-1.5 rounded-lg transition-all ${activityLevel === "athlete" ? "bg-white dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300 shadow-sm" : "text-slate-400 dark:text-slate-500 hover:text-slate-600"}`}>Athlete</button>
+            <button onClick={() => setActivityLevel("sedentary")} className={`flex-1 text-[10px] font-bold py-1.5 rounded-lg transition-all ${activityLevel === "sedentary" ? "bg-white dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300 shadow-sm" : "text-slate-400 dark:text-slate-500 hover:text-slate-600"}`}>{t('water_sedentary')}</button>
+            <button onClick={() => setActivityLevel("active")} className={`flex-1 text-[10px] font-bold py-1.5 rounded-lg transition-all ${activityLevel === "active" ? "bg-white dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300 shadow-sm" : "text-slate-400 dark:text-slate-500 hover:text-slate-600"}`}>{t('water_active')}</button>
+            <button onClick={() => setActivityLevel("athlete")} className={`flex-1 text-[10px] font-bold py-1.5 rounded-lg transition-all ${activityLevel === "athlete" ? "bg-white dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300 shadow-sm" : "text-slate-400 dark:text-slate-500 hover:text-slate-600"}`}>{t('water_athlete')}</button>
           </div>
 
-          <h3 className="text-base font-bold text-slate-800 dark:text-cyan-300 uppercase tracking-wider block relative z-10">Today's Intake Goal</h3>
+          <h3 className="text-base font-bold text-slate-800 dark:text-cyan-300 uppercase tracking-wider block relative z-10">{t('water_daily_goal')}</h3>
 
           <div className="relative h-44 w-44 flex items-center justify-center z-10">
             {/* SVG circle */}
@@ -127,7 +129,7 @@ export default function WaterIntakeView({
             {/* Inside Label */}
             <div className="absolute text-center">
               <span className="text-3xl font-black text-slate-800 dark:text-white tracking-tight drop-shadow-sm">{pct}%</span>
-              <p className="text-[10px] text-slate-400 dark:text-cyan-200/80 font-bold uppercase mt-0.5">Hydrated</p>
+              <p className="text-[10px] text-slate-400 dark:text-cyan-200/80 font-bold uppercase mt-0.5">{t("water_hydrated_lbl")}</p>
             </div>
           </div>
 
@@ -138,7 +140,7 @@ export default function WaterIntakeView({
             {pct >= 100 && (
               <span className="inline-flex items-center space-x-1.5 px-3 py-1 bg-green-500/10 dark:bg-cyan-500/20 text-green-700 dark:text-cyan-300 rounded-full text-xs font-semibold mt-2 shadow-[0_0_15px_rgba(34,211,238,0.3)]">
                 <CheckCircle className="h-3.5 w-3.5" />
-                <span>Water target met!</span>
+                <span>{t("water_target_met")}</span>
               </span>
             )}
           </div>
@@ -147,7 +149,7 @@ export default function WaterIntakeView({
           <div className={`w-full p-4 rounded-2xl border flex flex-col items-center text-center relative z-10 transition-colors ${status.bg} ${status.border}`}>
             <span className={`text-[10px] font-bold uppercase tracking-wider flex items-center space-x-1 ${status.color}`}>
               <ShieldAlert className="h-3 w-3" />
-              <span>{status.label} Status</span>
+              <span>{status.label} - {t('water_status')}</span>
             </span>
             <p className="text-xs font-medium text-slate-600 dark:text-slate-300 mt-1.5">{status.msg}</p>
           </div>
@@ -156,7 +158,7 @@ export default function WaterIntakeView({
         {/* Right Log Buttons & Reminders */}
         <div className="bg-white dark:bg-slate-950/80 dark:backdrop-blur-2xl p-6 sm:p-8 rounded-3xl border border-slate-100 dark:border-cyan-900/40 shadow-sm flex flex-col justify-between space-y-6 hover:-translate-y-1 hover:shadow-xl dark:hover:shadow-cyan-900/30 dark:hover:border-cyan-600/50 transition-all duration-300 cursor-default">
           <div className="space-y-4">
-            <h3 className="text-base font-bold text-slate-800 dark:text-cyan-300 uppercase tracking-wider">Quick Log Fluid Intake</h3>
+            <h3 className="text-base font-bold text-slate-800 dark:text-cyan-300 uppercase tracking-wider">{t('water_log_drink')}</h3>
             <div className="grid grid-cols-2 gap-4">
               {quickButtons.map((btn, idx) => (
                 <button
@@ -182,7 +184,7 @@ export default function WaterIntakeView({
           <div className="pt-6 border-t border-slate-50 dark:border-slate-800/50 space-y-4">
             <h3 className="text-sm font-bold text-slate-800 dark:text-cyan-300 uppercase tracking-wider flex items-center space-x-2">
               <Clock className="h-4 w-4 text-cyan-500" />
-              <span>Recent Intake Logs</span>
+              <span>{t('water_history')}</span>
             </h3>
             <div className="space-y-3">
               {logs.map((log, idx) => (
@@ -199,7 +201,7 @@ export default function WaterIntakeView({
             <div className="flex justify-between items-center">
               <div className="flex items-center space-x-2">
                 <Clock className="h-5 w-5 text-blue-500" />
-                <span className="text-sm font-bold text-slate-800 dark:text-white">Hydration Reminder Settings</span>
+                <span className="text-sm font-bold text-slate-800 dark:text-white">{t('water_reminders')}</span>
               </div>
               <label className="relative inline-flex items-center cursor-pointer">
                 <input
@@ -214,16 +216,16 @@ export default function WaterIntakeView({
 
             {reminderActive && (
               <div className="flex items-center space-x-4 bg-slate-50 dark:bg-black/40 p-3 rounded-2xl border border-slate-100 dark:border-slate-800/50 transition-all">
-                <span className="text-xs font-semibold text-slate-500 dark:text-cyan-100/90 shrink-0">Interval Duration:</span>
+                <span className="text-xs font-semibold text-slate-500 dark:text-cyan-100/90 shrink-0">{t("water_interval")}</span>
                 <select
                   value={reminderInterval}
                   onChange={(e) => setReminderInterval(Number(e.target.value))}
                   className="px-3 py-1.5 bg-white dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700/50 rounded-xl text-xs focus:outline-none focus:border-cyan-500 dark:focus:border-cyan-400 dark:text-white w-full transition-all cursor-pointer"
                 >
-                  <option value={30}>Every 30 Minutes</option>
-                  <option value={60}>Every 1 Hour</option>
-                  <option value={120}>Every 2 Hours</option>
-                  <option value={180}>Every 3 Hours</option>
+                  <option value={30}>{t("water_int_30")}</option>
+                  <option value={60}>{t("water_int_60")}</option>
+                  <option value={120}>{t("water_int_120")}</option>
+                  <option value={180}>{t("water_int_180")}</option>
                 </select>
                 <button
                   onClick={triggerMockSound}

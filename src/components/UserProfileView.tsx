@@ -21,6 +21,7 @@ import {
   Upload
 } from "lucide-react";
 import { User } from "../types";
+import { useLanguage } from "../LanguageContext";
 
 interface UserProfileViewProps {
   currentUser: User | null;
@@ -28,6 +29,7 @@ interface UserProfileViewProps {
 }
 
 export default function UserProfileView({ currentUser, onUpdateProfile }: UserProfileViewProps) {
+  const { t } = useLanguage();
   const [activeTab, setActiveTab] = React.useState<"overview" | "personal" | "security" | "sessions">("overview");
   const [isEditing, setIsEditing] = React.useState(false);
   const [editName, setEditName] = React.useState(currentUser?.name || "");
@@ -78,7 +80,7 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
     setIsExporting(true);
     setTimeout(() => {
       setIsExporting(false);
-      alert("Your data export is complete. Check your email for the download link.");
+      alert(t("profile_export_success"));
     }, 2000);
   };
 
@@ -87,7 +89,7 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
       setIsImporting(true);
       setTimeout(() => {
         setIsImporting(false);
-        alert("Data imported successfully!");
+        alert(t("profile_import_success"));
         if (importDataInputRef.current) importDataInputRef.current.value = "";
       }, 2000);
     }
@@ -105,7 +107,7 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
   const handleSaveProfile = async () => {
     const pureDigits = editPhone.replace(/\D/g, '');
     if (editPhone && pureDigits.length !== 10) {
-      setPhoneError("Mobile number must be exactly 10 digits");
+      setPhoneError(t("profile_phone_error"));
       return;
     }
 
@@ -123,10 +125,10 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
   };
 
   const tabs = [
-    { id: "overview", label: "Overview", icon: Activity },
-    { id: "personal", label: "Personal Details", icon: UserIcon },
-    { id: "security", label: "Security", icon: Shield },
-    { id: "sessions", label: "Active Sessions", icon: Laptop },
+    { id: "overview", label: t("profile_overview"), icon: Activity },
+    { id: "personal", label: t("profile_personal_details"), icon: UserIcon },
+    { id: "security", label: t("profile_security"), icon: Shield },
+    { id: "sessions", label: t("profile_active_sessions"), icon: Laptop },
   ] as const;
 
   if (!currentUser) return null;
@@ -143,7 +145,7 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
           <div className="absolute inset-0 bg-black/10 transition-opacity group-hover/cover:bg-black/40"></div>
           <div className="absolute inset-0 flex flex-col items-center justify-center opacity-0 group-hover/cover:opacity-100 transition-opacity duration-300">
             <Camera className="h-10 w-10 text-white mb-2 drop-shadow-md" />
-            <span className="text-white text-sm font-bold tracking-widest uppercase drop-shadow-md">Change Cover</span>
+            <span className="text-white text-sm font-bold tracking-widest uppercase drop-shadow-md">{t("profile_change_cover")}</span>
           </div>
           <input type="file" ref={coverInputRef} className="hidden" accept="image/*" onChange={handleCoverUpload} />
         </div>
@@ -214,37 +216,37 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
               <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
                 <h3 className="text-xl font-bold text-slate-800 dark:text-white flex items-center space-x-2">
                   <Activity className="h-5 w-5 text-green-500" />
-                  <span>Account Overview</span>
+                  <span>{t("profile_acc_overview")}</span>
                 </h3>
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <div className="p-4 bg-slate-50 dark:bg-black/40 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-green-500/50 hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer group">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Status</span>
-                  <span className="text-sm font-bold text-green-600 dark:text-green-400 mt-1 flex items-center space-x-1.5"><CheckCircle2 className="h-4 w-4" /> <span>Active</span></span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">{t("profile_status")}</span>
+                  <span className="text-sm font-bold text-green-600 dark:text-green-400 mt-1 flex items-center space-x-1.5"><CheckCircle2 className="h-4 w-4" /> <span>{t("profile_active")}</span></span>
                 </div>
                 <div className="p-4 bg-slate-50 dark:bg-black/40 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-green-500/50 hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer group">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Joined</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">{t("profile_joined")}</span>
                   <span className="text-sm font-bold text-slate-800 dark:text-white mt-1 block">
                     {new Date(currentUser.createdAt || Date.now()).toLocaleDateString()}
                   </span>
                 </div>
                 <div className="p-4 bg-slate-50 dark:bg-black/40 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-green-500/50 hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer group">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Role</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">{t("profile_role")}</span>
                   <span className="text-sm font-bold text-slate-800 dark:text-white mt-1 block capitalize">{currentUser.role}</span>
                 </div>
                 <div className="p-4 bg-slate-50 dark:bg-black/40 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-green-500/50 hover:shadow-lg hover:-translate-y-1 transition-all cursor-pointer group">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Verification</span>
-                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 mt-1 flex items-center space-x-1.5"><Shield className="h-4 w-4" /> <span>Verified</span></span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">{t("profile_verification")}</span>
+                  <span className="text-sm font-bold text-blue-600 dark:text-blue-400 mt-1 flex items-center space-x-1.5"><Shield className="h-4 w-4" /> <span>{t("profile_verified")}</span></span>
                 </div>
               </div>
 
               <div className="bg-gradient-to-r from-green-50 to-teal-50 dark:from-green-950/20 dark:to-teal-950/20 p-5 rounded-2xl border border-green-100 dark:border-green-900/30">
-                <h4 className="text-sm font-bold text-green-800 dark:text-green-300 mb-2">Complete Your Profile Setup</h4>
+                <h4 className="text-sm font-bold text-green-800 dark:text-green-300 mb-2">{t("profile_setup_title")}</h4>
                 <div className="w-full bg-green-200/50 dark:bg-green-900/50 h-2 rounded-full overflow-hidden mb-3">
                   <div className="bg-green-600 dark:bg-green-500 h-full w-[80%] rounded-full"></div>
                 </div>
-                <p className="text-xs text-green-700 dark:text-green-400 font-medium">Your profile is 80% complete. Add your phone number and secondary email for extra account recovery options.</p>
+                <p className="text-xs text-green-700 dark:text-green-400 font-medium">{t("profile_setup_desc")}</p>
               </div>
             </div>
           )}
@@ -255,14 +257,14 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
               <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
                 <h3 className="text-xl font-bold text-slate-800 dark:text-white flex items-center space-x-2">
                   <UserIcon className="h-5 w-5 text-green-500" />
-                  <span>Personal Details</span>
+                  <span>{t("profile_personal_details")}</span>
                 </h3>
                 {!isEditing ? (
                   <button 
                     onClick={() => setIsEditing(true)}
                     className="px-4 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition-colors cursor-pointer"
                   >
-                    Edit Info
+                    {t("profile_edit_info")}
                   </button>
                 ) : (
                   <div className="flex space-x-2">
@@ -270,14 +272,14 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
                       onClick={() => setIsEditing(false)}
                       className="px-4 py-1.5 text-xs font-bold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg transition-colors cursor-pointer"
                     >
-                      Cancel
+                      {t("profile_cancel")}
                     </button>
                     <button 
                       onClick={handleSaveProfile}
                       disabled={isSaving}
                       className="px-4 py-1.5 text-xs font-bold bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors shadow-md cursor-pointer flex items-center"
                     >
-                      {isSaving ? "Saving..." : "Save Changes"}
+                      {isSaving ? t("profile_saving") : t("profile_save_changes")}
                     </button>
                   </div>
                 )}
@@ -285,7 +287,7 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-1">
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Full Name</label>
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">{t("profile_full_name")}</label>
                   {isEditing ? (
                     <input 
                       type="text" 
@@ -301,7 +303,7 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
                 </div>
 
                 <div className="space-y-1">
-                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">Email Address</label>
+                  <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider">{t("profile_email")}</label>
                   {isEditing ? (
                     <input 
                       type="email" 
@@ -318,7 +320,7 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
 
                 <div className="space-y-1">
                   <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-1">
-                    <Phone className="h-3 w-3" /> <span>Phone Number</span>
+                    <Phone className="h-3 w-3" /> <span>{t("profile_phone")}</span>
                   </label>
                   {isEditing ? (
                     <div className="space-y-1">
@@ -331,21 +333,21 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
                           setEditPhone(val);
                           if (phoneError) setPhoneError("");
                         }}
-                        placeholder="Enter 10 digit number"
+                        placeholder={t("profile_phone_placeholder")}
                         className={`w-full px-4 py-2.5 bg-slate-50 dark:bg-black/40 border ${phoneError ? 'border-red-500' : 'border-slate-200 dark:border-slate-800 focus:border-green-500'} rounded-xl text-sm text-slate-800 dark:text-white transition-colors outline-none`}
                       />
                       {phoneError && <p className="text-[10px] text-red-500 font-bold">{phoneError}</p>}
                     </div>
                   ) : (
                     <div className="px-4 py-2.5 bg-slate-50 dark:bg-black/20 border border-slate-100 dark:border-slate-800/50 rounded-xl text-sm font-semibold text-slate-800 dark:text-white">
-                      {savedPhone ? savedPhone : <span className="text-slate-500 dark:text-slate-400">Not provided</span>}
+                      {savedPhone ? savedPhone : <span className="text-slate-500 dark:text-slate-400">{t("profile_not_provided")}</span>}
                     </div>
                   )}
                 </div>
 
                 <div className="space-y-1">
                   <label className="block text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center space-x-1">
-                    <Calendar className="h-3 w-3" /> <span>Date of Birth</span>
+                    <Calendar className="h-3 w-3" /> <span>{t("profile_dob")}</span>
                   </label>
                   {isEditing ? (
                     <input 
@@ -356,7 +358,7 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
                     />
                   ) : (
                     <div className="px-4 py-2.5 bg-slate-50 dark:bg-black/20 border border-slate-100 dark:border-slate-800/50 rounded-xl text-sm font-semibold text-slate-800 dark:text-white">
-                      {savedDob ? new Date(savedDob).toLocaleDateString() : <span className="text-slate-500 dark:text-slate-400">Not provided</span>}
+                      {savedDob ? new Date(savedDob).toLocaleDateString() : <span className="text-slate-500 dark:text-slate-400">{t("profile_not_provided")}</span>}
                     </div>
                   )}
                 </div>
@@ -370,7 +372,7 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
               <div className="flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4">
                 <h3 className="text-xl font-bold text-slate-800 dark:text-white flex items-center space-x-2">
                   <Shield className="h-5 w-5 text-green-500" />
-                  <span>Security & Authentication</span>
+                  <span>{t("profile_security_auth")}</span>
                 </h3>
               </div>
 
@@ -382,41 +384,41 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
                         <Key className="h-5 w-5" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-bold text-slate-800 dark:text-white">Account Password</h4>
-                        <p className="text-xs text-slate-500 mt-1">Last changed 3 months ago. We recommend changing it periodically.</p>
+                        <h4 className="text-sm font-bold text-slate-800 dark:text-white">{t("profile_acc_password")}</h4>
+                        <p className="text-xs text-slate-500 mt-1">{t("profile_pwd_last_changed")}</p>
                       </div>
                     </div>
                     <button 
                       onClick={() => setIsChangingPassword(!isChangingPassword)}
                       className="px-4 py-2 text-xs font-bold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 rounded-lg shadow-sm transition-all cursor-pointer whitespace-nowrap"
                     >
-                      {isChangingPassword ? "Cancel" : "Change"}
+                      {isChangingPassword ? t("profile_cancel") : t("profile_change")}
                     </button>
                   </div>
 
                   {isChangingPassword && (
                     <div className="mt-6 pt-6 border-t border-slate-200 dark:border-slate-700/50 space-y-4 animate-in slide-in-from-top-2 duration-300">
                       <div className="space-y-1">
-                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Current Password</label>
+                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">{t("profile_cur_pwd")}</label>
                         <input type="password" placeholder="••••••••" className="w-full sm:max-w-md px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-green-500 rounded-xl text-sm text-slate-800 dark:text-white transition-colors outline-none" />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">New Password</label>
+                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">{t("profile_new_pwd")}</label>
                         <input type="password" placeholder="••••••••" className="w-full sm:max-w-md px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-green-500 rounded-xl text-sm text-slate-800 dark:text-white transition-colors outline-none" />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">Confirm New Password</label>
+                        <label className="block text-xs font-bold text-slate-500 uppercase tracking-wider">{t("profile_confirm_pwd")}</label>
                         <input type="password" placeholder="••••••••" className="w-full sm:max-w-md px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:border-green-500 rounded-xl text-sm text-slate-800 dark:text-white transition-colors outline-none" />
                       </div>
                       <div className="pt-2">
                         <button 
                           onClick={() => {
-                            alert("Password successfully updated!");
+                            alert(t("profile_pwd_success"));
                             setIsChangingPassword(false);
                           }}
                           className="px-6 py-2.5 bg-green-600 hover:bg-green-700 text-white text-xs font-bold rounded-xl shadow-md transition-colors cursor-pointer"
                         >
-                          Save New Password
+                          {t("profile_save_new_pwd")}
                         </button>
                       </div>
                     </div>
@@ -430,27 +432,27 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
                     </div>
                     <div>
                       <h4 className="text-sm font-bold text-slate-800 dark:text-white flex items-center space-x-2">
-                        <span>Two-Factor Authentication</span>
+                        <span>{t("profile_2fa")}</span>
                         {is2FAEnabled ? (
                           <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[9px] uppercase font-black rounded flex items-center space-x-1">
                             <CheckCircle2 className="h-2 w-2" />
-                            <span>Enabled</span>
+                            <span>{t("profile_enabled")}</span>
                           </span>
                         ) : (
                           <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[9px] uppercase font-black rounded flex items-center space-x-1">
                             <AlertTriangle className="h-2 w-2" />
-                            <span>Disabled</span>
+                            <span>{t("profile_disabled")}</span>
                           </span>
                         )}
                       </h4>
-                      <p className="text-xs text-slate-500 mt-1 max-w-sm">Add an extra layer of security to your account by enabling 2FA with an authenticator app.</p>
+                      <p className="text-xs text-slate-500 mt-1 max-w-sm">{t("profile_2fa_desc")}</p>
                     </div>
                   </div>
                   <button 
                     onClick={() => setIs2FAEnabled(!is2FAEnabled)}
                     className={`px-4 py-2 text-xs font-bold text-white border border-transparent rounded-lg shadow-md transition-all cursor-pointer ${is2FAEnabled ? "bg-rose-600 hover:bg-rose-700" : "bg-blue-600 hover:bg-blue-700"}`}
                   >
-                    {is2FAEnabled ? "Disable 2FA" : "Enable 2FA"}
+                    {is2FAEnabled ? t("profile_disable_2fa") : t("profile_enable_2fa")}
                   </button>
                 </div>
               </div>
@@ -458,7 +460,7 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
               <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
                 <h4 className="text-sm font-bold text-rose-600 flex items-center space-x-2 mb-4">
                   <AlertTriangle className="h-4 w-4" />
-                  <span>Danger Zone</span>
+                  <span>{t("profile_danger_zone")}</span>
                 </h4>
                 <div className="flex flex-col sm:flex-row gap-4">
                   <input type="file" ref={importDataInputRef} className="hidden" accept=".json,.csv" onChange={handleImport} />
@@ -468,7 +470,7 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
                     className="flex items-center justify-center space-x-2 px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold rounded-xl transition-colors cursor-pointer w-full sm:w-auto disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {isImporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
-                    <span>{isImporting ? "Importing..." : "Import Data"}</span>
+                    <span>{isImporting ? t("profile_importing") : t("profile_import_data")}</span>
                   </button>
                   <button 
                     onClick={handleExport}
@@ -476,17 +478,17 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
                     className="flex items-center justify-center space-x-2 px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold rounded-xl transition-colors cursor-pointer w-full sm:w-auto disabled:opacity-70 disabled:cursor-not-allowed"
                   >
                     {isExporting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
-                    <span>{isExporting ? "Exporting..." : "Export My Data"}</span>
+                    <span>{isExporting ? t("profile_exporting") : t("profile_export_data")}</span>
                   </button>
                   <button 
                     onClick={() => {
-                      const confirmText = prompt("Type 'DELETE' to confirm permanent account deletion.");
-                      if (confirmText === "DELETE") alert("Account deletion request submitted.");
+                      const confirmText = prompt(t("profile_delete_confirm"));
+                      if (confirmText === "DELETE") alert(t("profile_delete_success"));
                     }}
                     className="flex items-center justify-center space-x-2 px-4 py-2.5 bg-rose-50 dark:bg-rose-950/20 border border-rose-200 dark:border-rose-900/50 text-rose-700 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-xs font-bold rounded-xl transition-colors cursor-pointer w-full sm:w-auto ml-auto"
                   >
                     <Trash2 className="h-4 w-4" />
-                    <span>Delete Account</span>
+                    <span>{t("profile_delete_acc")}</span>
                   </button>
                 </div>
               </div>
@@ -503,7 +505,7 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
                 </h3>
               </div>
               <p className="text-xs text-slate-500 -mt-4">
-                These are the devices that have logged into your account. Revoke any sessions that you do not recognize.
+                {t("profile_sessions_desc")}
               </p>
 
               <div className="space-y-4">
@@ -515,8 +517,8 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
                     </div>
                     <div>
                       <h4 className="text-sm font-bold text-slate-800 dark:text-white flex items-center space-x-2">
-                        <span>Windows • Chrome Browser</span>
-                        <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] uppercase font-bold rounded">Current</span>
+                        <span>{t("profile_win_chrome")}</span>
+                        <span className="px-2 py-0.5 bg-green-100 text-green-700 text-[10px] uppercase font-bold rounded">{t("profile_current")}</span>
                       </h4>
                       <p className="text-xs text-slate-500 mt-1">New Delhi, India • IP: 192.168.1.1</p>
                     </div>
@@ -531,28 +533,28 @@ export default function UserProfileView({ currentUser, onUpdateProfile }: UserPr
                         <Smartphone className="h-6 w-6" />
                       </div>
                       <div>
-                        <h4 className="text-sm font-bold text-slate-800 dark:text-white">iPhone 13 • Safari App</h4>
+                        <h4 className="text-sm font-bold text-slate-800 dark:text-white">{t("profile_iphone_safari")}</h4>
                         <p className="text-xs text-slate-500 mt-1">Lucknow, India • Last active: 2 hours ago</p>
                       </div>
                     </div>
-                    <button 
-                      onClick={() => { setRevokedSessions(prev => [...prev, "iphone"]); alert("Session revoked successfully."); }}
-                      className="px-4 py-2 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 rounded-lg transition-colors cursor-pointer w-full sm:w-auto"
-                    >
-                      Revoke Access
-                    </button>
+                      <button 
+                        onClick={() => { setRevokedSessions(prev => [...prev, "iphone"]); alert(t("profile_session_revoked")); }}
+                        className="px-4 py-2 text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/20 dark:hover:bg-rose-900/30 rounded-lg transition-colors cursor-pointer w-full sm:w-auto"
+                      >
+                        {t("profile_revoke_access")}
+                      </button>
                   </div>
                 )}
               </div>
 
               <div className="pt-4 flex justify-end">
-                <button 
-                  onClick={() => { setRevokedSessions(prev => [...prev, "iphone"]); alert("Signed out of all other active sessions."); }}
-                  className="text-xs font-bold text-slate-500 hover:text-slate-700 dark:hover:text-white flex items-center space-x-1.5 transition-colors cursor-pointer"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span>Sign out of all other devices</span>
-                </button>
+                  <button 
+                    onClick={() => { setRevokedSessions(prev => [...prev, "iphone"]); alert(t("profile_signout_success")); }}
+                    className="text-xs font-bold text-slate-500 hover:text-slate-700 dark:hover:text-white flex items-center space-x-1.5 transition-colors cursor-pointer"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    <span>{t("profile_signout_all")}</span>
+                  </button>
               </div>
             </div>
           )}
