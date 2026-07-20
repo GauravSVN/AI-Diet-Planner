@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
   dob: { type: String, default: "" },
   password: { type: String, required: true },
   role: { type: String, default: "user" },
+  subscription: { type: String, default: "free" },
   createdAt: { type: String, required: true },
 });
 export const User = mongoose.model("User", userSchema);
@@ -132,3 +133,21 @@ const otpSchema = new mongoose.Schema({
   expiresAt: { type: Number, required: true },
 });
 export const OTP = mongoose.model("OTP", otpSchema);
+
+// 10. System Config Schema
+const systemConfigSchema = new mongoose.Schema({
+  key: { type: String, required: true, unique: true },
+  value: { type: mongoose.Schema.Types.Mixed, required: true },
+});
+export const SystemConfig = mongoose.model("SystemConfig", systemConfigSchema);
+
+// 11. Audit Log Schema
+const auditLogSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  adminEmail: { type: String, required: true },
+  action: { type: String, required: true },
+  target: { type: String, required: true },
+  details: { type: String, default: "" },
+  timestamp: { type: String, required: true },
+});
+export const AuditLog = mongoose.model("AuditLog", auditLogSchema);

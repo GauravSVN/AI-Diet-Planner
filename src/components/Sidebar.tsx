@@ -16,7 +16,9 @@ import {
   ChevronRight,
   ClipboardList,
   MessageSquareHeart,
-  BookOpenCheck
+  BookOpenCheck,
+  Radio,
+  PieChart
 } from "lucide-react";
 import { UserRole } from "../types";
 import { useLanguage } from "../LanguageContext";
@@ -74,7 +76,14 @@ export default function Sidebar({
 
   // Admin / Nutritionist additions
   const adminItems = [
-    { id: "admin-panel", label: "Admin Panel", icon: ShieldCheck },
+    { id: "admin-dashboard", label: "Admin Dashboard", icon: LayoutDashboard },
+    { id: "admin-feedback", label: "User Feedbacks", icon: MessageSquareHeart },
+    { id: "admin-broadcast", label: "Broadcast", icon: Radio },
+    { id: "admin-analytics", label: "Analytics", icon: PieChart },
+    { id: "admin-cms", label: "Recipes CMS", icon: FileText },
+    { id: "admin-health", label: "System Health", icon: Activity },
+    { id: "admin-prompt", label: "AI Tuning", icon: Settings },
+    { id: "admin-audit", label: "Audit Logs", icon: ShieldCheck },
   ];
 
   const nutritionistItems = [
@@ -83,7 +92,10 @@ export default function Sidebar({
 
   const isSuperAdmin = userEmail === "gauravraj17062000@gmail.com";
 
-  const visibleItems = isSuperAdmin ? adminItems : [
+  const visibleItems = isSuperAdmin ? [
+    ...adminItems,
+    { id: "settings", label: t("nav_settings"), icon: Settings }
+  ] : [
     ...navItems,
     ...(userRole === "admin" ? adminItems : []),
     ...(userRole === "nutritionist" ? nutritionistItems : []),

@@ -92,6 +92,7 @@ export default function App() {
     totalAssessments: 0,
     totalFeedbacks: 0,
     averageRating: 5.0,
+    totalPremiumUsers: 0,
   });
 
   const [isLoadingData, setIsLoadingData] = React.useState(false);
@@ -112,7 +113,7 @@ export default function App() {
       setIsLoggedIn(true);
       setActiveSection("dashboard");
       if (parsedUser.email === "gauravraj17062000@gmail.com") {
-        setCurrentTab("admin-panel");
+        setCurrentTab("admin-dashboard");
       }
     }
   }, []);
@@ -181,7 +182,7 @@ export default function App() {
       setAuthMode(null);
       setActiveSection("dashboard");
       if (user.email === "gauravraj17062000@gmail.com") {
-        setCurrentTab("admin-panel");
+        setCurrentTab("admin-dashboard");
       } else {
         setCurrentTab("dashboard");
       }
@@ -349,6 +350,18 @@ export default function App() {
       fetchDashboardData();
     } catch (err) {
       console.error("Error purging user:", err);
+    }
+  };
+
+  // Admin: Toggle Subscription
+  const handleToggleSubscription = async (userId: string) => {
+    if (!token) return;
+    try {
+      const config = { headers: { Authorization: `Bearer ${token}` } };
+      await axios.post(`/api/admin/users/${userId}/subscription`, {}, config);
+      fetchDashboardData();
+    } catch (err) {
+      console.error("Error toggling subscription:", err);
     }
   };
 
@@ -642,12 +655,15 @@ export default function App() {
                   />
                 )}
 
-                {currentTab === "admin-panel" && currentUser?.role === "admin" && (
+                {currentTab.startsWith("admin-") && currentUser?.role === "admin" && (
                   <AdminPanelView 
+                    activeTab={currentTab.replace("admin-", "")}
                     stats={adminStats} 
                     users={allUsers} 
                     onToggleRole={handleToggleRole}
                     onDeleteUser={handleDeleteUser}
+                    onToggleSubscription={handleToggleSubscription}
+                    onNavigate={(tab) => setCurrentTab(`admin-${tab}`)}
                   />
                 )}
               </>
@@ -796,6 +812,13 @@ export default function App() {
                       placeholder="Enter secure password..."
                       className="w-full pl-10 pr-10 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-white focus:border-green-500 dark:focus:border-green-500 focus:bg-white dark:focus:bg-slate-950 rounded-xl text-sm focus:outline-none transition-all"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-white"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
                   </div>
 
                   {/* Role Selector */}

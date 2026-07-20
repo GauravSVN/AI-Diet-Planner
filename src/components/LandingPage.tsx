@@ -123,8 +123,8 @@ export default function LandingPage({
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] opacity-40 dark:opacity-20 animate-[pulse_10s_ease-in-out_infinite]"></div>
         
         {/* Floating Ambient Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-[40rem] h-[40rem] bg-blue-500/15 dark:bg-blue-600/20 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-screen animate-[pulse_8s_ease-in-out_infinite]"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-purple-500/15 dark:bg-purple-600/20 rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-screen animate-[pulse_12s_ease-in-out_infinite_reverse]"></div>
+        <div className="absolute top-1/4 left-1/4 w-[40rem] h-[40rem] bg-emerald-400/20 dark:bg-emerald-600/20 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-screen animate-[pulse_8s_ease-in-out_infinite]"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-[30rem] h-[30rem] bg-green-400/20 dark:bg-green-600/20 rounded-full blur-[100px] mix-blend-multiply dark:mix-blend-screen animate-[pulse_12s_ease-in-out_infinite_reverse]"></div>
       </div>
 
       {/* Professional Hero Section */}
@@ -209,10 +209,10 @@ export default function LandingPage({
             {stats.map((stat, idx) => (
               <motion.div 
                 key={idx} 
-                initial={{ opacity: 0, rotateX: 45, scale: 0.9, y: 30 }}
-                whileInView={{ opacity: 1, rotateX: 0, scale: 1, y: 0 }}
+                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: idx * 0.1, ease: "easeOut" }}
+                transition={{ type: "spring", stiffness: 100, damping: 20, delay: idx * 0.1 }}
                 className="space-y-1 hover:-translate-y-1 transition-all duration-300"
               >
                 <p className="text-3xl sm:text-4xl font-extrabold text-green-600 dark:text-green-400 tracking-tight drop-shadow-sm">
@@ -231,10 +231,10 @@ export default function LandingPage({
       <section id="features" className="py-20 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            initial={{ opacity: 0, rotateX: 45, scale: 0.9, y: 30 }}
-            whileInView={{ opacity: 1, rotateX: 0, scale: 1, y: 0 }}
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
             className="text-center max-w-3xl mx-auto mb-16 space-y-4"
           >
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-800 dark:text-white tracking-tight drop-shadow-sm">
@@ -251,10 +251,10 @@ export default function LandingPage({
               return (
                 <motion.div
                   key={idx}
-                  initial={{ opacity: 0, rotateX: 45, scale: 0.9, y: 50 }}
-                  whileInView={{ opacity: 1, rotateX: 0, scale: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true, margin: "-50px" }}
-                  transition={{ duration: 0.5, delay: idx * 0.1, ease: "easeOut" }}
+                  transition={{ type: "spring", stiffness: 100, damping: 20, delay: idx * 0.1 }}
                   className="bg-gradient-to-br from-white to-green-50/40 dark:from-slate-900/90 dark:to-slate-950/90 dark:backdrop-blur-xl p-6 rounded-3xl border border-green-100/60 dark:border-green-900/40 shadow-sm hover:shadow-xl hover:shadow-green-200/40 dark:hover:shadow-green-900/30 dark:hover:border-green-500/50 hover:-translate-y-2 transition-all duration-500 flex flex-col justify-between group cursor-pointer"
                 >
                   <div className="space-y-4">
@@ -279,10 +279,10 @@ export default function LandingPage({
       <section id="how-it-works" className="py-20 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border-t border-slate-100/50 dark:border-slate-800/50 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            initial={{ opacity: 0, rotateX: 45, scale: 0.9, y: 30 }}
-            whileInView={{ opacity: 1, rotateX: 0, scale: 1, y: 0 }}
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
             className="text-center max-w-3xl mx-auto mb-16 space-y-4"
           >
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-800 dark:text-white tracking-tight drop-shadow-sm">
@@ -300,10 +300,10 @@ export default function LandingPage({
             {steps.map((step, idx) => (
               <motion.div 
                 key={idx} 
-                initial={{ opacity: 0, rotateX: 45, scale: 0.9, y: 40 }}
-                whileInView={{ opacity: 1, rotateX: 0, scale: 1, y: 0 }}
+                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.6, delay: idx * 0.15, ease: "easeOut" }}
+                transition={{ type: "spring", stiffness: 100, damping: 20, delay: idx * 0.15 }}
                 className="relative z-10 text-center space-y-4 px-4 group cursor-pointer"
               >
                 <div className="mx-auto h-16 w-16 bg-green-500 dark:bg-green-600/20 dark:border dark:border-green-500/30 text-white dark:text-green-400 rounded-full flex items-center justify-center font-bold text-xl shadow-lg shadow-green-100 dark:shadow-green-900/50 group-hover:scale-110 group-hover:rotate-12 transition-all duration-300">
@@ -325,10 +325,10 @@ export default function LandingPage({
       <section id="testimonials" className="py-20 relative z-10 border-t border-slate-100/50 dark:border-slate-800/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            initial={{ opacity: 0, rotateX: 45, scale: 0.9, y: 30 }}
-            whileInView={{ opacity: 1, rotateX: 0, scale: 1, y: 0 }}
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
             className="text-center max-w-3xl mx-auto mb-16 space-y-4"
           >
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-800 dark:text-white tracking-tight drop-shadow-sm">
@@ -364,10 +364,10 @@ export default function LandingPage({
       <section id="faq" className="py-20 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md border-t border-slate-100/50 dark:border-slate-800/50 relative z-10">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div 
-            initial={{ opacity: 0, rotateX: 45, scale: 0.9, y: 30 }}
-            whileInView={{ opacity: 1, rotateX: 0, scale: 1, y: 0 }}
+            initial={{ opacity: 0, y: 40, scale: 0.95 }}
+            whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: true, margin: "-50px" }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            transition={{ type: "spring", stiffness: 100, damping: 20 }}
             className="text-center mb-16 space-y-4"
           >
             <h2 className="text-3xl font-extrabold text-slate-800 dark:text-white tracking-tight drop-shadow-sm">
@@ -382,10 +382,10 @@ export default function LandingPage({
             {faqs.map((faq, idx) => (
               <motion.div
                 key={idx}
-                initial={{ opacity: 0, rotateX: 45, scale: 0.9, y: 20 }}
-                whileInView={{ opacity: 1, rotateX: 0, scale: 1, y: 0 }}
+                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
                 viewport={{ once: true, margin: "-50px" }}
-                transition={{ duration: 0.5, delay: idx * 0.1, ease: "easeOut" }}
+                transition={{ type: "spring", stiffness: 100, damping: 20, delay: idx * 0.1 }}
                 className="bg-slate-50 dark:bg-slate-950/50 rounded-2xl border border-slate-100 dark:border-slate-800 hover:border-green-300 dark:hover:border-green-900/50 overflow-hidden transition-all duration-300"
               >
                 <button
@@ -414,10 +414,10 @@ export default function LandingPage({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white/40 dark:bg-slate-900/40 backdrop-blur-md rounded-3xl border border-slate-100/50 dark:border-slate-800/50 shadow-xl dark:shadow-green-900/10 overflow-hidden grid grid-cols-1 lg:grid-cols-12">
             <motion.div 
-              initial={{ opacity: 0, rotateY: -45, scale: 0.9, x: -30 }}
-              whileInView={{ opacity: 1, rotateY: 0, scale: 1, x: 0 }}
+              initial={{ opacity: 0, x: -40, scale: 0.95 }}
+              whileInView={{ opacity: 1, x: 0, scale: 1 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
+              transition={{ type: "spring", stiffness: 100, damping: 20 }}
               className="lg:col-span-5 bg-slate-900 dark:bg-slate-950/50 p-8 sm:p-12 text-white flex flex-col justify-between space-y-8 border-r border-transparent dark:border-slate-800"
             >
               <div className="space-y-4">
@@ -444,10 +444,10 @@ export default function LandingPage({
             </motion.div>
 
             <motion.div 
-              initial={{ opacity: 0, rotateY: 45, scale: 0.9, x: 30 }}
-              whileInView={{ opacity: 1, rotateY: 0, scale: 1, x: 0 }}
+              initial={{ opacity: 0, x: 40, scale: 0.95 }}
+              whileInView={{ opacity: 1, x: 0, scale: 1 }}
               viewport={{ once: true, margin: "-50px" }}
-              transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+              transition={{ type: "spring", stiffness: 100, damping: 20, delay: 0.2 }}
               className="lg:col-span-7 p-8 sm:p-12"
             >
               <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert("Feedback received!"); }}>
