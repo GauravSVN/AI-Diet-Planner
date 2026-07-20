@@ -151,3 +151,13 @@ const auditLogSchema = new mongoose.Schema({
   timestamp: { type: String, required: true },
 });
 export const AuditLog = mongoose.model("AuditLog", auditLogSchema);
+
+// 12. Message Schema
+const messageSchema = new mongoose.Schema({
+  id: { type: String, required: true, unique: true },
+  senderId: { type: String, required: true },
+  receiverId: { type: String, required: true },
+  text: { type: String, required: true },
+  createdAt: { type: String, required: true },
+});
+export const Message = mongoose.model("Message", messageSchema);

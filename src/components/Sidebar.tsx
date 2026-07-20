@@ -16,6 +16,7 @@ import {
   ChevronRight,
   ClipboardList,
   MessageSquareHeart,
+  MessageCircle,
   BookOpenCheck,
   Radio,
   PieChart
@@ -71,6 +72,7 @@ export default function Sidebar({
     { id: "progress", label: t("nav_progress"), icon: TrendingUp },
     { id: "history", label: t("nav_history"), icon: History },
     { id: "feedback", label: t("nav_feedback"), icon: MessageSquareHeart },
+    { id: "chat", label: "Nutritionist Chat", icon: MessageCircle },
     { id: "settings", label: t("nav_settings"), icon: Settings },
   ];
 

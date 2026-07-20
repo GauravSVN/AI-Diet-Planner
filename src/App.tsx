@@ -43,6 +43,8 @@ import RecipesView from "./components/RecipesView";
 import FeedbackView from "./components/FeedbackView";
 import SettingsView from "./components/SettingsView";
 import AdminPanelView from "./components/AdminPanelView";
+import NutritionistDashboardView from "./components/NutritionistDashboardView";
+import UserChatView from "./components/UserChatView";
 import UserProfileView from "./components/UserProfileView";
 
 import { 
@@ -642,6 +644,14 @@ export default function App() {
 
                 {currentTab === "feedback" && (
                   <FeedbackView feedbacks={feedbacks} onAddFeedback={handleAddFeedback} />
+                )}
+
+                {currentTab === "chat" && (
+                  <UserChatView currentUser={currentUser} />
+                )}
+
+                {currentTab === "nutri-dashboard" && currentUser?.role === "nutritionist" && (
+                  <NutritionistDashboardView currentUser={currentUser} />
                 )}
 
                 {currentTab === "settings" && (

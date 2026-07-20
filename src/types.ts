@@ -186,3 +186,11 @@ export interface Feedback {
   rating: number;
   createdAt: string;
 }
+
+export interface ChatMessage {
+  id: string;
+  senderId: string;
+  receiverId: string;
+  text: string;
+  createdAt: string;
+}

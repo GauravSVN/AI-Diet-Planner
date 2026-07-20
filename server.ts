@@ -1221,6 +1221,266 @@ app.post("/api/admin/users/:id/subscription", authMiddleware, async (req: any, r
   }
 });
 
+// 24. MESSAGING SYSTEM
+app.post("/api/messages", authMiddleware, async (req: any, res) => {
+  try {
+    const { receiverId, text } = req.body;
+    if (!receiverId || !text) {
+      return res.status(400).json({ error: "Receiver ID and text are required." });
+    }
+
+    const message = new Message({
+      id: "msg-" + Date.now(),
+      senderId: req.user.id,
+      receiverId,
+      text,
+      createdAt: new Date().toISOString(),
+    });
+
+    await message.save();
+    res.json({ success: true, message });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/api/messages/:otherUserId", authMiddleware, async (req: any, res) => {
+  try {
+    const { otherUserId } = req.params;
+    const currentUserId = req.user.id;
+
+    const messages = await Message.find({
+      $or: [
+        { senderId: currentUserId, receiverId: otherUserId },
+        { senderId: otherUserId, receiverId: currentUserId }
+      ]
+    }).sort({ createdAt: 1 });
+
+    res.json(messages);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 25. GET AVAILABLE NUTRITIONISTS
+app.get("/api/nutritionists", authMiddleware, async (req: any, res) => {
+  try {
+    const nutritionists = await User.find({ role: "nutritionist" }, { password: 0 }).lean();
+    res.json(nutritionists);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// 24. GET CLIENTS (For Nutritionist Dashboard)
+app.get("/api/clients", authMiddleware, async (req: any, res) => {
+  try {
+    // Only return users who are NOT admins or nutritionists
+    const clients = await User.find({ role: "user" }, "-password");
+    res.json(clients);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// ADMIN ROUTES
+// ==========================================
+
+// Middleware for Admin check
+const adminMiddleware = async (req: any, res: any, next: any) => {
+  if (req.user?.role !== "admin") {
+    return res.status(403).json({ error: "Access denied. Admin only." });
+  }
+  next();
+};
+
+app.get("/api/admin/stats", authMiddleware, adminMiddleware, async (req: any, res) => {
+  try {
+    const totalUsers = await User.countDocuments();
+    const totalAssessments = await Assessment.countDocuments();
+    const totalFeedbacks = await Feedback.countDocuments();
+    
+    // Calculate average rating if feedbacks exist
+    let averageRating = 0;
+    if (totalFeedbacks > 0) {
+      const feedbacks = await Feedback.find();
+      const sum = feedbacks.reduce((acc, curr) => acc + (curr.rating || 5), 0);
+      averageRating = sum / feedbacks.length;
+    }
+
+    res.json({
+      totalUsers,
+      totalAssessments,
+      totalFeedbacks,
+      averageRating,
+      totalPremiumUsers: 0,
+      categoryStats: [
+        { name: "Active", value: totalUsers },
+      ]
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/api/admin/users", authMiddleware, adminMiddleware, async (req: any, res) => {
+  try {
+    const users = await User.find({}, "-password").sort({ createdAt: -1 });
+    res.json(users);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put("/api/admin/users/:id", authMiddleware, adminMiddleware, async (req: any, res) => {
+  try {
+    const { role } = req.body;
+    if (!["user", "admin", "nutritionist"].includes(role)) {
+      return res.status(400).json({ error: "Invalid role" });
+    }
+    
+    const user = await User.findOneAndUpdate(
+      { id: req.params.id }, 
+      { role }, 
+      { new: true }
+    ).select("-password");
+    
+    if (!user) return res.status(404).json({ error: "User not found" });
+    res.json({ success: true, user });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post("/api/admin/users/:id/subscription", authMiddleware, adminMiddleware, async (req: any, res) => {
+  try {
+    const user = await User.findOne({ id: req.params.id });
+    if (!user) return res.status(404).json({ error: "User not found" });
+    
+    // Toggle subscription
+    user.subscription = user.subscription === "premium" ? "free" : "premium";
+    await user.save();
+    
+    res.json({ success: true, subscription: user.subscription });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete("/api/admin/users/:id", authMiddleware, adminMiddleware, async (req: any, res) => {
+  try {
+    const deleted = await User.findOneAndDelete({ id: req.params.id });
+    if (!deleted) return res.status(404).json({ error: "User not found" });
+    res.json({ success: true, message: "User deleted successfully" });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// FEEDBACK ROUTES
+// ==========================================
+
+app.post("/api/feedback", authMiddleware, async (req: any, res) => {
+  try {
+    const { message, rating, category } = req.body;
+    if (!message || !rating) return res.status(400).json({ error: "Message and rating are required." });
+
+    const newFeedback = new Feedback({
+      id: "fb-" + Date.now(),
+      userId: req.user.id,
+      name: req.user.name,
+      email: req.user.email,
+      message,
+      rating,
+      createdAt: new Date().toISOString()
+    });
+
+    await newFeedback.save();
+    res.json({ success: true, feedback: newFeedback });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.get("/api/feedback", authMiddleware, async (req, res) => {
+  try {
+    // Return all feedbacks
+    const feedbacks = await Feedback.find().sort({ createdAt: -1 });
+    res.json(feedbacks);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ==========================================
+// NUTRITIONIST ROUTES
+// ==========================================
+
+const nutritionistMiddleware = async (req: any, res: any, next: any) => {
+  if (req.user?.role !== "nutritionist" && req.user?.role !== "admin") {
+    return res.status(403).json({ error: "Access denied. Nutritionist only." });
+  }
+  next();
+};
+
+app.get("/api/nutritionist/client/:userId/details", authMiddleware, nutritionistMiddleware, async (req: any, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // Get latest diet plan
+    const dietPlans = await DietPlan.find({ userId }).sort({ createdAt: 1 });
+    const latestPlan = dietPlans.length > 0 ? dietPlans[dietPlans.length - 1] : null;
+    
+    // Get latest report
+    const reports = await Report.find({ userId }).sort({ createdAt: 1 });
+    const latestReport = reports.length > 0 ? reports[reports.length - 1] : null;
+    
+    // Get progress logs
+    const progressLogs = await Progress.find({ userId }).sort({ date: -1 }).limit(14);
+    
+    res.json({
+      dietPlan: latestPlan,
+      report: latestReport,
+      progressLogs
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put("/api/nutritionist/client/:userId/dietplan", authMiddleware, nutritionistMiddleware, async (req: any, res) => {
+  try {
+    const { userId } = req.params;
+    const { dailyCalories, proteinGrams, carbsGrams, fatGrams, waterIntakeLitres, meals, recommendations } = req.body;
+    
+    // Find the latest diet plan
+    const dietPlans = await DietPlan.find({ userId }).sort({ createdAt: 1 });
+    if (dietPlans.length === 0) {
+      return res.status(404).json({ error: "No diet plan found for this user." });
+    }
+    
+    const latestPlan = dietPlans[dietPlans.length - 1];
+    
+    // Update the plan
+    latestPlan.dailyCalories = dailyCalories || latestPlan.dailyCalories;
+    latestPlan.proteinGrams = proteinGrams || latestPlan.proteinGrams;
+    latestPlan.carbsGrams = carbsGrams || latestPlan.carbsGrams;
+    latestPlan.fatGrams = fatGrams || latestPlan.fatGrams;
+    latestPlan.waterIntakeLitres = waterIntakeLitres || latestPlan.waterIntakeLitres;
+    
+    if (meals) latestPlan.meals = meals;
+    if (recommendations) latestPlan.recommendations = recommendations;
+    
+    await latestPlan.save();
+    
+    res.json({ success: true, message: "Diet plan updated successfully", dietPlan: latestPlan });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // VITE MIDDLEWARE SETUP
 
 async function startServer() {
