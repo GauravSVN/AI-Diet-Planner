@@ -16,7 +16,7 @@ export default function UserChatView({ currentUser }: UserChatViewProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("auth_token");
         
         // Fetch nutritionist
         const nutRes = await fetch("/api/nutritionists", {
@@ -61,7 +61,7 @@ export default function UserChatView({ currentUser }: UserChatViewProps) {
     e.preventDefault();
     if (!newMessage.trim() || !nutritionist || !currentUser) return;
 
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("auth_token");
     try {
       const res = await fetch("/api/messages", {
         method: "POST",

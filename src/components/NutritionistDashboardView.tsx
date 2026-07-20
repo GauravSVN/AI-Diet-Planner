@@ -27,7 +27,7 @@ export default function NutritionistDashboardView({ currentUser }: NutritionistD
   useEffect(() => {
     const fetchClients = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("auth_token");
         const res = await fetch("/api/clients", {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -48,7 +48,7 @@ export default function NutritionistDashboardView({ currentUser }: NutritionistD
     const fetchMessages = async () => {
       if (!selectedClientChat) return;
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("auth_token");
         const res = await fetch(`/api/messages/${selectedClientChat.id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -78,7 +78,7 @@ export default function NutritionistDashboardView({ currentUser }: NutritionistD
     e.preventDefault();
     if (!chatMessage.trim() || !selectedClientChat || !currentUser) return;
     
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("auth_token");
     try {
       const res = await fetch("/api/messages", {
         method: "POST",
@@ -104,7 +104,7 @@ export default function NutritionistDashboardView({ currentUser }: NutritionistD
 
   const handleReviewPlanClick = async (client: User) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("auth_token");
       const res = await fetch(`/api/nutritionist/client/${client.id}/details`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -118,7 +118,7 @@ export default function NutritionistDashboardView({ currentUser }: NutritionistD
 
   const handleTrackProgressClick = async (client: User) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("auth_token");
       const res = await fetch(`/api/nutritionist/client/${client.id}/details`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -133,7 +133,7 @@ export default function NutritionistDashboardView({ currentUser }: NutritionistD
     if (!editedPlan) return;
     setIsSavingPlan(true);
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("auth_token");
       const res = await fetch(`/api/nutritionist/client/${selectedClientPlan.id}/dietplan`, {
         method: "PUT",
         headers: { 
