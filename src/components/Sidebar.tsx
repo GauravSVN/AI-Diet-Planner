@@ -94,14 +94,23 @@ export default function Sidebar({
 
   const isSuperAdmin = userEmail === "gauravraj17062000@gmail.com";
 
-  const visibleItems = isSuperAdmin ? [
-    ...adminItems,
-    { id: "settings", label: t("nav_settings"), icon: Settings }
-  ] : [
-    ...navItems,
-    ...(userRole === "admin" ? adminItems : []),
-    ...(userRole === "nutritionist" ? nutritionistItems : []),
-  ];
+  let visibleItems: any[] = [];
+  
+  if (userRole === "admin" || isSuperAdmin) {
+    visibleItems = [
+      ...adminItems,
+      { id: "settings", label: t("nav_settings"), icon: Settings }
+    ];
+  } else if (userRole === "nutritionist") {
+    visibleItems = [
+      ...nutritionistItems,
+      { id: "settings", label: t("nav_settings"), icon: Settings }
+    ];
+  } else {
+    visibleItems = [
+      ...navItems,
+    ];
+  }
 
   return (
     <>
