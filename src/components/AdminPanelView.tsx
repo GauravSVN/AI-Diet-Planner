@@ -37,10 +37,11 @@ export default function AdminPanelView({
   const [searchQuery, setSearchQuery] = React.useState("");
   const [selectedUser, setSelectedUser] = React.useState<any | null>(null);
 
+  const trimmedSearch = searchQuery.trim().toLowerCase();
   const filteredUsers = users.filter((u) => 
-    u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    u.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    u.role.toLowerCase().includes(searchQuery.toLowerCase())
+    u.name.toLowerCase().includes(trimmedSearch) ||
+    u.email.toLowerCase().includes(trimmedSearch) ||
+    u.role.toLowerCase().includes(trimmedSearch)
   );
 
   const exportCsv = () => {
@@ -175,7 +176,7 @@ export default function AdminPanelView({
         </div>
 
         {/* User Table */}
-        <div className="overflow-x-auto rounded-2xl border border-slate-100 dark:border-slate-800">
+        <div className="overflow-x-auto rounded-2xl border border-slate-100 dark:border-slate-800 w-full">
           <table className="w-full min-w-[800px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
