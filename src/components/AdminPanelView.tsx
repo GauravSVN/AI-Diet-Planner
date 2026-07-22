@@ -176,7 +176,7 @@ export default function AdminPanelView({
 
         {/* User Table */}
         <div className="overflow-x-auto rounded-2xl border border-slate-100 dark:border-slate-800">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full min-w-[800px] text-left border-collapse">
             <thead>
               <tr className="bg-slate-50 dark:bg-slate-900/50 text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider border-b border-slate-100 dark:border-slate-800">
                 <th className="p-4 w-12 text-center">#</th>
