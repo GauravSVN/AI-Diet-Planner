@@ -152,7 +152,7 @@ export default function App() {
       setFeedbacks(Array.isArray(feedRes.data) ? feedRes.data : []);
 
       // If Admin, fetch admin stats and users
-      if (currentUser?.role === "admin") {
+      if (currentUser?.role === "admin" || currentUser?.email === "gauravraj17062000@gmail.com") {
         const statsRes = await axios.get("/api/admin/stats", config).catch(() => null);
         if (statsRes && typeof statsRes.data !== "string") {
           setAdminStats(statsRes.data);
@@ -665,7 +665,7 @@ export default function App() {
                   />
                 )}
 
-                {currentTab.startsWith("admin-") && currentUser?.role === "admin" && (
+                {currentTab.startsWith("admin-") && (currentUser?.role === "admin" || currentUser?.email === "gauravraj17062000@gmail.com") && (
                   <AdminPanelView 
                     activeTab={currentTab.replace("admin-", "")}
                     stats={adminStats} 
